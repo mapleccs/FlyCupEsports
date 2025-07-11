@@ -1,10 +1,12 @@
 <template>
   <div class="home">
-    <!-- 1. 顶栏大图 / 引导 -->
     <HeroSection />
 
-    <!-- 2. 核心功能模块 -->
     <section class="features">
+      <div class="section-header">
+        <h2 class="section-title">核心功能</h2>
+        <p class="section-subtitle">一站式英雄联盟赛事管理解决方案</p>
+      </div>
       <div class="feature-grid">
         <FeatureCard
           title="比赛信息"
@@ -24,19 +26,34 @@
       </div>
     </section>
 
-    <!-- 3. 即将开始的赛事列表 -->
     <section class="events">
-      <h2>即将开始的赛事</h2>
+      <div class="section-header">
+        <h2 class="section-title">即将开始的赛事</h2>
+        <p class="section-subtitle">不要错过这些精彩比赛</p>
+      </div>
       <div class="events-list">
         <div
           v-for="event in upcomingEvents"
           :key="event.id"
           class="event-card"
         >
-          <h3>{{ event.name }}</h3>
-          <p>{{ formatDate(event.start_time) }}</p>
-          <RouterLink :to="`/events/${event.id}`">查看详情</RouterLink>
+          <div class="event-badge">即将开始</div>
+          <div class="event-content">
+            <h3>{{ event.name }}</h3>
+            <div class="event-meta">
+              <i class="el-icon-time"></i>
+              <span>{{ formatDate(event.start_time) }}</span>
+            </div>
+            <RouterLink :to="`/events/${event.id}`" class="event-link">
+              查看详情 <i class="el-icon-right"></i>
+            </RouterLink>
+          </div>
         </div>
+      </div>
+      <div class="view-all">
+        <RouterLink to="/events" class="btn-secondary">
+          查看全部赛事 <i class="el-icon-right"></i>
+        </RouterLink>
       </div>
     </section>
   </div>
@@ -55,14 +72,14 @@ const upcomingEvents = ref([])
 async function fetchEvents() {
   try {
     const { data } = await getUpcomingEvents()
-    upcomingEvents.value = data
+    upcomingEvents.value = data.slice(0, 4) // 只显示前4个
   } catch (err) {
     console.error('Failed to load events:', err)
   }
 }
 
 function formatDate(isoString) {
-  return format(new Date(isoString), 'yyyy-MM-dd HH:mm')
+  return format(new Date(isoString), 'yyyy年MM月dd日 HH:mm')
 }
 
 onMounted(fetchEvents)
@@ -70,36 +87,195 @@ onMounted(fetchEvents)
 
 <style scoped>
 .home {
-  padding: 20px;
+  padding: 0;
+  max-width: 1400px;
+  margin: 0 auto;
 }
+
+.section-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.section-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  background: linear-gradient(to right, #5d5fef, #DE4344);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 12px;
+  position: relative;
+  display: inline-block;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(to right, #5d5fef, #DE4344);
+  border-radius: 2px;
+}
+
+.section-subtitle {
+  color: var(--gray);
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* 功能区域 */
 .features {
-  margin: 40px 0;
+  padding: 100px 20px 80px;
+  background: var(--dark);
+  position: relative;
+  overflow: hidden;
 }
+
+.features::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(to right, #171624, #DE4344);
+}
+
 .feature-grid {
-  display: flex;
-  gap: 20px;
-  justify-content: space-around;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
+
+/* 赛事区域 */
 .events {
-  margin-top: 60px;
+  padding: 0 20px 80px;
+  background: url('@/assets/images/dot-pattern.png') var(--darker);
 }
+
 .events-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+  max-width: 1200px;
+  margin: 0 auto 40px;
 }
+
 .event-card {
-  border: 1px solid #ddd;
-  padding: 16px;
-  border-radius: 8px;
-  background: #fafafa;
+  background: rgba(15, 23, 42, 0.7);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(93, 95, 239, 0.2);
+  transition: var(--transition);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
+
+.event-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(93, 95, 239, 0.5);
+  box-shadow: 0 15px 35px rgba(93, 95, 239, 0.3);
+}
+
+.event-badge {
+  position: absolute;
+  top: 15px;
+  right: -30px;
+  background: var(--secondary);
+  color: white;
+  padding: 5px 30px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transform: rotate(45deg);
+  box-shadow: 0 2px 10px rgba(255, 70, 85, 0.3);
+}
+
+.event-content {
+  padding: 30px;
+}
+
 .event-card h3 {
-  margin-bottom: 8px;
+  font-size: 1.4rem;
+  margin-bottom: 15px;
+  color: white;
 }
-.event-card p {
-  font-size: 0.9em;
-  color: #666;
-  margin-bottom: 12px;
+
+.event-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--gray);
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+}
+
+.event-meta i {
+  color: var(--primary);
+}
+
+.event-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--primary);
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.event-link:hover {
+  color: var(--secondary);
+  text-decoration: none;
+  gap: 12px;
+}
+
+.view-all {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  padding: 12px 30px;
+  border-radius: 30px;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.btn-secondary:hover {
+  background: rgba(93, 95, 239, 0.1);
+  color: white;
+  text-decoration: none;
+  gap: 12px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .features, .events {
+    padding: 60px 20px;
+  }
+
+  .feature-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .event-card {
+    margin-bottom: 20px;
+  }
 }
 </style>
