@@ -3,7 +3,7 @@
     <div class="hero-content">
       <p>专业级英雄联盟线上赛事管理平台</p>
       <div class="hero-buttons">
-        <RouterLink to="/signup" class="btn-primary">了解更多</RouterLink>
+        <button @click="scrollToIntro" class="btn-primary">了解更多</button>
         <RouterLink to="/events" class="btn-outline">查看赛事</RouterLink>
       </div>
     </div>
@@ -12,7 +12,25 @@
 </template>
 
 <script setup>
-import { RouterLink } from 'vue-router'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+function scrollToIntro() {
+  // 如果已经在首页，直接滚动到锚点
+  if (router.currentRoute.value.name === 'Home') {
+    const introElement = document.getElementById('intro')
+    if (introElement) {
+      window.scrollTo({
+        top: introElement.offsetTop,
+        behavior: 'smooth'
+      })
+    }
+  } else {
+    // 如果不在首页，导航到首页并滚动
+    router.push({ name: 'Home', hash: '#intro' })
+  }
+}
 </script>
 
 <style scoped>

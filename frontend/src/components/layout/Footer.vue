@@ -5,7 +5,7 @@
         <div class="footer-col">
           <h3 class="footer-title">Fly Cup 电竞平台</h3>
           <p class="footer-desc">
-            专业级英雄联盟线上赛事管理解决方案，为赛事方和玩家提供一站式服务
+            专业级英雄联盟线上赛事管理平台，为赛事方和玩家提供一站式服务
           </p>
           <div class="social-links">
             <a href="#" class="social-link">

@@ -1,11 +1,10 @@
 <template>
   <div class="home">
     <HeroSection />
-
-    <section class="features">
+    <section id="intro" class="features">
       <div class="section-header">
         <h2 class="section-title">核心功能</h2>
-        <p class="section-subtitle">一站式英雄联盟赛事管理解决方案</p>
+        <p class="section-subtitle">一站式英雄联盟赛事管理平台</p>
       </div>
       <div class="feature-grid">
         <FeatureCard

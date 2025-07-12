@@ -5,7 +5,24 @@
 <script>
 export default {
   name: 'App',
-};
+  watch: {
+    $route(to) {
+      // 处理页面内的锚点导航
+      if (to.hash) {
+        setTimeout(() => {
+          const element = document.getElementById(to.hash.replace('#', ''))
+          if (element) {
+            const offset = 70 // 导航栏高度
+            window.scrollTo({
+              top: element.offsetTop - offset,
+              behavior: 'smooth'
+            })
+          }
+        }, 100)
+      }
+    }
+  }
+}
 </script>
 
 <style>
