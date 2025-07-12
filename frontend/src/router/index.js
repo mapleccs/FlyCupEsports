@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/Home.vue'
+import Teams from '@/views/Teams.vue'
 
 const routes = [
   {
@@ -7,6 +8,7 @@ const routes = [
     component: () => import('@/layouts/MainLayout.vue'),
     children: [
         { path: '/', name: 'Home', component: Home },
+        { path: '/teams', name: 'Teams', component: Teams },
         // 其他页面路由
     ]
   },

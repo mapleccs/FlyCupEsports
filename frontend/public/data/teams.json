@@ -1,0 +1,70 @@
+{
+  "teams": [
+    {
+      "id": 1,
+      "name": "IG战队",
+      "abbreviation": "TD",
+      "region": "FLY",
+      "logo": "team1.png",
+      "win": 12,
+      "loss": 3,
+      "kda": 4.5,
+      "gold_per_min": 1850,
+      "tower_destroyed_per_game": 7.8,
+      "dragon_per_game": 3.4,
+      "top_heroes": [
+        {"name": "亚索", "count": 15, "win_rate": 80},
+        {"name": "李青", "count": 12, "win_rate": 75},
+        {"name": "艾希", "count": 10, "win_rate": 70}
+      ],
+      "recent_matches": [
+        {"opponent": "FPX战队", "result": "win", "date": "2023-10-10"},
+        {"opponent": "EDG战队", "result": "win", "date": "2023-10-05"}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "FPX战队",
+      "abbreviation": "FB",
+      "region": "FLY",
+      "logo": "team2.png",
+      "win": 10,
+      "loss": 5,
+      "kda": 3.8,
+      "gold_per_min": 1780,
+      "tower_destroyed_per_game": 6.9,
+      "dragon_per_game": 2.8,
+      "top_heroes": [
+        {"name": "劫", "count": 14, "win_rate": 78},
+        {"name": "薇恩", "count": 11, "win_rate": 72},
+        {"name": "锤石", "count": 9, "win_rate": 66}
+      ],
+      "recent_matches": [
+        {"opponent": "IG战队", "result": "loss", "date": "2023-10-10"},
+        {"opponent": "EDG战队", "result": "win", "date": "2023-10-03"}
+      ]
+    },
+    {
+      "id": 3,
+      "name": "EDG战队",
+      "abbreviation": "LY",
+      "region": "PFP",
+      "logo": "team3.png",
+      "win": 9,
+      "loss": 6,
+      "kda": 3.6,
+      "gold_per_min": 1820,
+      "tower_destroyed_per_game": 7.2,
+      "dragon_per_game": 3.1,
+      "top_heroes": [
+        {"name": "卡莎", "count": 13, "win_rate": 76},
+        {"name": "盖伦", "count": 11, "win_rate": 68},
+        {"name": "拉克丝", "count": 8, "win_rate": 62}
+      ],
+      "recent_matches": [
+        {"opponent": "IG战队", "result": "loss", "date": "2023-10-05"},
+        {"opponent": "FPX战队", "result": "loss", "date": "2023-10-01"}
+      ]
+    }
+  ]
+}
