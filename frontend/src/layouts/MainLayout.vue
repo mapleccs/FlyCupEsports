@@ -72,7 +72,7 @@ const navItems = ref([
   { path: '/schedule', title: '赛程', icon: 'el-icon-date' },
   { path: '/teams', title: '战队', icon: 'el-icon-trophy' },
   { path: '/stats', title: '数据', icon: 'el-icon-data-analysis' },
-  { path: '/videos', title: '视频', icon: 'el-icon-film' },
+  { path: '/recruitment', title: '招募', icon: 'el-icon-user-solid' },
   { path: '/signup', title: '报名', icon: 'el-icon-edit' },
   { path: '/partners', title: '合作', icon: 'el-icon-handshake' }
 ])

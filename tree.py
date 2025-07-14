@@ -34,7 +34,7 @@ def generate_project_tree(startpath, indent='', ignore_dirs=None, ignore_exts=No
 
 
 # 使用你项目的路径
-project_path = "./"
+project_path = "../"
 ignore_folders = ['env', '__pycache__', 'node_modules']  # 忽略的文件夹，比如 'data'
 ignore_extensions = ['.pyc']  # 忽略的文件后缀，比如 '.pyc'
 generate_project_tree(project_path, ignore_dirs=ignore_folders, ignore_exts=ignore_extensions)
