@@ -1,102 +1,299 @@
 <template>
   <div class="teams-page">
     <div class="container">
-      <h1 class="page-title">战队排行榜</h1>
+      <h1 class="page-title">战队平台</h1>
 
-      <!-- 筛选区域 -->
-      <div class="filters">
-        <el-select v-model="selectedRegion" placeholder="选择赛区" class="region-filter">
-          <el-option label="全部赛区" value="all"></el-option>
-          <el-option label="FLY" value="FLY"></el-option>
-          <el-option label="FPF" value="FPF"></el-option>
-          <el-option label="ACE" value="ACE"></el-option>
-          <el-option label="ACC" value="ACC"></el-option>
-        </el-select>
-
-        <el-button
-          type="primary"
-          @click="openComparison"
-          class="compare-btn"
+      <!-- 选项卡切换 -->
+      <div class="tabs">
+        <button
+          :class="['tab-btn', { active: activeTab === 'ranking' }]"
+          @click="activeTab = 'ranking'"
         >
-          <i class="el-icon-scale"></i> 对比战队
-        </el-button>
-      </div>
-
-      <!-- 加载状态 -->
-      <div v-if="isLoading" class="loading-placeholder">
-        <i class="el-icon-loading"></i> 加载战队数据中...
-      </div>
-
-      <!-- 错误状态 -->
-      <div v-else-if="error" class="error-message">
-        <i class="el-icon-error"></i> {{ error }}
+          战队排名
+        </button>
+        <button
+          :class="['tab-btn', { active: activeTab === 'training' }]"
+          @click="activeTab = 'training'"
+        >
+          训练赛预约
+        </button>
+        <button
+          :class="['tab-btn', { active: activeTab === 'my-training' }]"
+          @click="activeTab = 'my-training'"
+        >
+          我的预约
+        </button>
       </div>
 
       <!-- 战队排行榜 -->
-      <div v-else class="teams-container">
-        <el-table :data="filteredTeams" style="width: 100%" stripe v-loading="isLoading">
-          <el-table-column prop="rank" label="排名" width="80" sortable>
-            <template #default="{ $index }">
-              <span class="rank-badge" :class="getRankClass($index + 1)">
-                {{ $index + 1 }}
-              </span>
-            </template>
-          </el-table-column>
-          <el-table-column label="战队" width="200">
-            <template #default="{ row }">
-              <div class="team-info">
-                <img :src="getLogoPath(row.logo)" class="team-logo" />
-                <div>
-                  <div class="team-name">{{ row.name }}</div>
-                  <div class="team-region">{{ row.region }}</div>
+      <div v-if="activeTab === 'ranking'" class="tab-content">
+        <!-- 筛选区域 -->
+        <div class="filters">
+          <el-select v-model="selectedRegion" placeholder="选择赛区" class="region-filter">
+            <el-option label="全部赛区" value="all"></el-option>
+            <el-option label="FLY" value="FLY"></el-option>
+            <el-option label="FPF" value="FPF"></el-option>
+            <el-option label="ACE" value="ACE"></el-option>
+            <el-option label="ACC" value="ACC"></el-option>
+          </el-select>
+
+          <el-button
+            type="primary"
+            @click="openComparison"
+            class="compare-btn"
+          >
+            <i class="el-icon-scale"></i> 对比战队
+          </el-button>
+        </div>
+
+        <!-- 加载状态 -->
+        <div v-if="isLoading" class="loading-placeholder">
+          <i class="el-icon-loading"></i> 加载战队数据中...
+        </div>
+
+        <!-- 错误状态 -->
+        <div v-else-if="error" class="error-message">
+          <i class="el-icon-error"></i> {{ error }}
+        </div>
+
+        <!-- 战队排行榜 -->
+        <div v-else class="teams-container">
+          <el-table :data="filteredTeams" style="width: 100%" stripe v-loading="isLoading">
+            <el-table-column prop="rank" label="排名" width="80" sortable>
+              <template #default="{ $index }">
+                <span class="rank-badge" :class="getRankClass($index + 1)">
+                  {{ $index + 1 }}
+                </span>
+              </template>
+            </el-table-column>
+            <el-table-column label="战队" width="200">
+              <template #default="{ row }">
+                <div class="team-info">
+                  <img :src="getLogoPath(row.logo)" class="team-logo" />
+                  <div>
+                    <div class="team-name">{{ row.name }}</div>
+                    <div class="team-region">{{ row.region }}</div>
+                  </div>
                 </div>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="win_rate" label="胜率" sortable>
-            <template #default="{ row }">
-              <div class="win-rate">
-                {{ (row.win_rate * 100).toFixed(1) }}%
-                <div class="win-loss">({{ row.win }}胜{{ row.loss }}负)</div>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="kda" label="KDA" sortable />
-          <el-table-column prop="gold_per_min" label="每分钟金币" sortable />
-          <el-table-column label="操作">
-            <template #default="{ row }">
-              <el-button type="primary" size="small" @click="showTeamDetail(row)">
-                查看详情
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+              </template>
+            </el-table-column>
+            <el-table-column prop="win_rate" label="胜率" sortable>
+              <template #default="{ row }">
+                <div class="win-rate">
+                  {{ (row.win_rate * 100).toFixed(1) }}%
+                  <div class="win-loss">({{ row.win }}胜{{ row.loss }}负)</div>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="kda" label="KDA" sortable />
+            <el-table-column prop="gold_per_min" label="每分钟金币" sortable />
+            <el-table-column label="操作">
+              <template #default="{ row }">
+                <el-button type="primary" size="small" @click="showTeamDetail(row)">
+                  查看详情
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+
+        <!-- 战队详情弹窗 -->
+        <el-dialog
+          v-model="detailVisible"
+          :title="currentTeam ? currentTeam.name : '战队详情'"
+          width="80%"
+        >
+          <TeamCard v-if="currentTeam" :team="currentTeam" />
+          <div v-else class="loading-placeholder">
+            <i class="el-icon-loading"></i> 加载中...
+          </div>
+        </el-dialog>
+
+        <!-- 战队对比弹窗 -->
+        <el-dialog v-model="comparisonVisible" title="战队对比" width="90%">
+          <TeamComparison
+            v-if="teams.length > 0"
+            :teams="teams"
+            :selectedTeam1="selectedTeam1"
+            :selectedTeam2="selectedTeam2"
+            @update:selectedTeam1="selectedTeam1 = $event"
+            @update:selectedTeam2="selectedTeam2 = $event"
+          />
+          <div v-else class="loading-placeholder">
+            <i class="el-icon-loading"></i> 加载战队数据...
+          </div>
+        </el-dialog>
       </div>
 
-      <!-- 战队详情弹窗 -->
+      <!-- 训练赛预约市场 -->
+      <div v-if="activeTab === 'training'" class="tab-content">
+        <div class="training-header">
+          <h2>训练赛预约市场</h2>
+          <el-button type="primary" @click="showSessionForm">
+            <i class="el-icon-plus"></i> 发布训练赛预约
+          </el-button>
+        </div>
+
+        <TrainingSessionList
+          :sessions="availableSessions"
+          :is-my-sessions="false"
+          @apply-session="applyForSession"
+          @view-detail="viewSessionDetail"
+        />
+      </div>
+
+      <!-- 我的预约管理 -->
+      <div v-if="activeTab === 'my-training'" class="tab-content">
+        <div class="training-header">
+          <h2>我的训练赛预约</h2>
+          <el-button type="primary" @click="showSessionForm">
+            <i class="el-icon-plus"></i> 发布新预约
+          </el-button>
+        </div>
+
+        <el-tabs v-model="mySessionsTab" class="my-sessions-tabs">
+          <el-tab-pane label="我发布的" name="published">
+            <TrainingSessionList
+              :sessions="myPublishedSessions"
+              :is-my-sessions="true"
+              @edit-session="editSession"
+              @view-applications="viewApplications"
+              @cancel-session="cancelSession"
+            />
+          </el-tab-pane>
+          <el-tab-pane label="我申请的" name="applied">
+            <TrainingSessionList
+              :sessions="myAppliedSessions"
+              :is-my-sessions="false"
+              @cancel-application="cancelMyApplication"
+              @view-detail="viewSessionDetail"/>
+          </el-tab-pane>
+          <el-tab-pane label="历史记录" name="history">
+            <TrainingSessionList
+              :sessions="sessionHistory"
+              :is-my-sessions="false"
+              :show-status="true"
+            />
+          </el-tab-pane>
+        </el-tabs>
+      </div>
+
+      <!-- 发布/编辑训练赛表单弹窗 -->
       <el-dialog
-        v-model="detailVisible"
-        :title="currentTeam ? currentTeam.name : '战队详情'"
-        width="80%"
+        v-model="sessionFormVisible"
+        :title="isEditingSession ? '编辑训练赛预约' : '发布训练赛预约'"
+        width="600px"
       >
-        <TeamCard v-if="currentTeam" :team="currentTeam" />
-        <div v-else class="loading-placeholder">
-          <i class="el-icon-loading"></i> 加载中...
+        <TrainingSessionForm
+          v-if="sessionFormVisible"
+          :session="currentSession"
+          @submit="handleSessionSubmit"
+        />
+      </el-dialog>
+
+      <!-- 预约详情弹窗 -->
+      <el-dialog
+        v-model="sessionDetailVisible"
+        :title="currentSessionDetail ? currentSessionDetail.title : '训练赛详情'"
+        width="700px"
+      >
+        <div v-if="currentSessionDetail" class="session-detail">
+          <div class="detail-header">
+            <div class="team-info">
+              <img :src="getLogoPath(currentSessionDetail.team.logo)" class="team-logo" />
+              <div>
+                <h3>{{ currentSessionDetail.team.name }}</h3>
+                <div class="team-region">{{ currentSessionDetail.team.region }}</div>
+              </div>
+            </div>
+            <div class="session-status" :class="currentSessionDetail.status">
+              {{ getStatusText(currentSessionDetail.status) }}
+            </div>
+          </div>
+
+          <div class="detail-content">
+            <div class="detail-row">
+              <div class="label">训练赛标题：</div>
+              <div class="value">{{ currentSessionDetail.title }}</div>
+            </div>
+            <div class="detail-row">
+              <div class="label">预约时间：</div>
+              <div class="value">{{ formatDate(currentSessionDetail.date) }} {{ currentSessionDetail.time }}</div>
+            </div>
+            <div class="detail-row">
+              <div class="label">预计时长：</div>
+              <div class="value">{{ currentSessionDetail.duration }} 小时</div>
+            </div>
+            <div class="detail-row">
+              <div class="label">训练模式：</div>
+              <div class="value">{{ currentSessionDetail.mode }}</div>
+            </div>
+            <div class="detail-row">
+              <div class="label">训练要求：</div>
+              <div class="value">{{ currentSessionDetail.requirements || '无特殊要求' }}</div>
+            </div>
+            <div class="detail-row">
+              <div class="label">备注说明：</div>
+              <div class="value">{{ currentSessionDetail.description || '无' }}</div>
+            </div>
+          </div>
+
+          <div v-if="currentSessionDetail.status === 'open' && !isMySession(currentSessionDetail)" class="apply-section">
+            <el-button type="primary" @click="applyForSession(currentSessionDetail)">
+              申请预约
+            </el-button>
+          </div>
+
+          <div v-if="isMySession(currentSessionDetail) && currentSessionDetail.applications.length > 0" class="applications-section">
+            <h3>申请列表</h3>
+            <div v-for="app in currentSessionDetail.applications" :key="app.id" class="application-item">
+              <div class="app-team">
+                <img :src="getLogoPath(app.team.logo)" class="team-logo-sm" />
+                <div>
+                  <div class="team-name">{{ app.team.name }}</div>
+                  <div class="team-region">{{ app.team.region }}</div>
+                </div>
+              </div>
+              <div class="app-message">{{ app.message || '无留言' }}</div>
+              <div class="app-actions">
+                <el-button size="small" @click="acceptMyApplication(app)">
+                  接受
+                </el-button>
+                <el-button size="small" @click="rejectMyApplication(app)">
+                  拒绝
+                </el-button>
+              </div>
+            </div>
+          </div>
         </div>
       </el-dialog>
 
-      <!-- 战队对比弹窗 -->
-      <el-dialog v-model="comparisonVisible" title="战队对比" width="90%">
-        <TeamComparison
-          v-if="teams.length > 0"
-          :teams="teams"
-          :selectedTeam1="selectedTeam1"
-          :selectedTeam2="selectedTeam2"
-          @update:selectedTeam1="selectedTeam1 = $event"
-          @update:selectedTeam2="selectedTeam2 = $event"
-        />
-        <div v-else class="loading-placeholder">
-          <i class="el-icon-loading"></i> 加载战队数据...
+      <!-- 申请预约表单弹窗 -->
+      <el-dialog
+        v-model="applyFormVisible"
+        title="申请训练赛预约"
+        width="500px"
+      >
+        <div v-if="currentApplySession" class="apply-form">
+          <div class="form-header">
+            申请与 <span class="team-name">{{ currentApplySession.team.name }}</span> 进行训练赛
+          </div>
+
+          <el-form :model="applyForm" label-width="80px">
+            <el-form-item label="留言">
+              <el-input
+                v-model="applyForm.message"
+                type="textarea"
+                :rows="4"
+                placeholder="请简单介绍你的战队和训练赛计划"
+              ></el-input>
+            </el-form-item>
+          </el-form>
+
+          <div class="form-footer">
+            <el-button @click="applyFormVisible = false">取消</el-button>
+            <el-button type="primary" @click="submitApplication">提交申请</el-button>
+          </div>
         </div>
       </el-dialog>
     </div>
@@ -108,18 +305,60 @@ import { ref, computed, onMounted } from 'vue'
 import { getTeams } from '@/services/teamService'
 import TeamCard from '@/components/ui/TeamCard.vue'
 import TeamComparison from '@/components/ui/TeamComparison.vue'
+import {
+  getTrainingSessions,
+  createTrainingSession,
+  updateTrainingSession,
+  applyForTrainingSession,
+  getMyApplications,
+  cancelTrainingSession,
+  cancelApplication as cancelTrainingApplication,
+  acceptApplication as acceptTrainingApplication,
+  rejectApplication as rejectTrainingApplication,
+  getTrainingHistory
+} from '@/services/trainingService'
+import TrainingSessionList from '@/components/ui/TrainingSessionList.vue'
+import TrainingSessionForm from '@/components/ui/TrainingSessionForm.vue'
 
-const teams = ref([])
+// 当前用户（模拟）
+const currentUser = ref({
+  id: 1,
+  name: "IG战队",
+  isCaptain: true
+})
+
+// 状态管理
+const activeTab = ref('ranking')
+const mySessionsTab = ref('published')
+const sessionFormVisible = ref(false)
+const sessionDetailVisible = ref(false)
+const applyFormVisible = ref(false)
+const isEditingSession = ref(false)
+
+// 战队排名相关状态
 const selectedRegion = ref('all')
 const detailVisible = ref(false)
 const comparisonVisible = ref(false)
 const currentTeam = ref(null)
 const selectedTeam1 = ref(null)
 const selectedTeam2 = ref(null)
-
-// 加载状态和错误处理
 const isLoading = ref(false)
 const error = ref(null)
+
+// 数据
+const teams = ref([])
+const availableSessions = ref([])
+const myPublishedSessions = ref([])
+const myAppliedSessions = ref([])
+const sessionHistory = ref([])
+const currentSession = ref(null)
+const currentSessionDetail = ref(null)
+const currentApplySession = ref(null)
+
+// 申请表单
+const applyForm = ref({
+  message: ''
+})
 
 // 计算胜率并排序
 const processedTeams = computed(() => {
@@ -138,8 +377,10 @@ const filteredTeams = computed(() => {
   return processedTeams.value.filter(t => t.region === selectedRegion.value)
 })
 
+// 加载数据
 onMounted(async () => {
   try {
+    // 加载战队数据
     isLoading.value = true
     teams.value = await getTeams()
     // 确保有数据再设置默认值
@@ -147,14 +388,136 @@ onMounted(async () => {
       selectedTeam1.value = teams.value[0].id
       selectedTeam2.value = teams.value[1].id
     }
-  } catch (err) {
-    console.error('加载战队数据失败:', err)
-    error.value = '加载战队数据失败，请稍后再试'
-  } finally {
     isLoading.value = false
+
+    // 加载训练赛数据
+    await loadTrainingData()
+  } catch (err) {
+    console.error('加载数据失败:', err)
+    error.value = '加载战队数据失败，请稍后再试'
   }
 })
 
+// 加载训练赛相关数据
+async function loadTrainingData() {
+  availableSessions.value = await getTrainingSessions('available')
+  myPublishedSessions.value = await getTrainingSessions('my-published')
+  myAppliedSessions.value = await getMyApplications()
+  sessionHistory.value = await getTrainingHistory()
+}
+
+// 显示预约表单
+function showSessionForm() {
+  isEditingSession.value = false
+  currentSession.value = null
+  sessionFormVisible.value = true
+}
+
+// 编辑预约
+function editSession(session) {
+  isEditingSession.value = true
+  currentSession.value = { ...session }
+  sessionFormVisible.value = true
+}
+
+// 处理预约提交
+async function handleSessionSubmit(sessionData) {
+  if (isEditingSession.value) {
+    await updateTrainingSession(sessionData)
+  } else {
+    await createTrainingSession(sessionData)
+  }
+  sessionFormVisible.value = false
+  loadTrainingData()
+}
+
+// 查看预约详情
+function viewSessionDetail(session) {
+  currentSessionDetail.value = session
+  sessionDetailVisible.value = true
+}
+
+// 查看申请列表
+function viewApplications(session) {
+  currentSessionDetail.value = session
+  sessionDetailVisible.value = true
+}
+
+// 申请预约
+function applyForSession(session) {
+  currentApplySession.value = session
+  applyForm.value = { message: '' }
+  applyFormVisible.value = true
+}
+
+// 提交申请
+async function submitApplication() {
+  if (!currentApplySession.value) return
+
+  await applyForTrainingSession({
+    sessionId: currentApplySession.value.id,
+    message: applyForm.value.message
+  })
+
+  applyFormVisible.value = false
+  loadTrainingData()
+}
+
+// 取消预约
+async function cancelSession(session) {
+  await cancelTrainingSession(session.id)
+  loadTrainingData()
+}
+
+// 取消申请
+async function cancelMyApplication(application) {
+  await cancelTrainingApplication(application.id)
+  loadTrainingData()
+}
+
+// 接受申请
+async function acceptMyApplication(application) {
+  await acceptTrainingApplication(application.id)
+  loadTrainingData()
+  sessionDetailVisible.value = false
+}
+
+// 拒绝申请
+async function rejectMyApplication(application) {
+  await rejectTrainingApplication(application.id)
+  loadTrainingData()
+}
+
+// 判断是否是我的预约
+function isMySession(session) {
+  return session.team.id === currentUser.value.id
+}
+
+// 获取状态文本
+function getStatusText(status) {
+  const statusMap = {
+    open: '开放预约',
+    pending: '待处理',
+    accepted: '已接受',
+    rejected: '已拒绝',
+    completed: '已完成',
+    cancelled: '已取消'
+  }
+  return statusMap[status] || status
+}
+
+// 格式化日期
+function formatDate(dateString) {
+  const options = { year: 'numeric', month: 'long', day: 'numeric' }
+  return new Date(dateString).toLocaleDateString(undefined, options)
+}
+
+// 获取Logo路径
+function getLogoPath(logo) {
+  return `/images/teams/${logo || 'default-logo.png'}`
+}
+
+// 战队排名相关方法
 function showTeamDetail(team) {
   currentTeam.value = team
   detailVisible.value = true
@@ -174,10 +537,6 @@ function getRankClass(rank) {
   if (rank === 2) return 'rank-2'
   if (rank === 3) return 'rank-3'
   return ''
-}
-
-function getLogoPath(logo) {
-  return `/images/teams/${logo || 'default-logo.png'}`
 }
 </script>
 
@@ -213,6 +572,197 @@ function getLogoPath(logo) {
   border-radius: 2px;
 }
 
+.tabs {
+  display: flex;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tab-btn {
+  padding: 10px 20px;
+  background: transparent;
+  border: none;
+  color: var(--gray);
+  font-size: 1rem;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+  color: white;
+}
+
+.tab-btn.active {
+  color: var(--primary);
+  font-weight: bold;
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+.tab-content {
+  margin-top: 20px;
+}
+
+.training-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.my-sessions-tabs {
+  margin-top: 20px;
+}
+
+.session-detail {
+  padding: 10px;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.team-info {
+  display: flex;
+  align-items: center;
+}
+
+.team-logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin-right: 15px;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 5px;
+}
+
+.session-status {
+  padding: 5px 15px;
+  border-radius: 15px;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.session-status.open {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4CAF50;
+}
+
+.session-status.pending {
+  background: rgba(255, 152, 0, 0.2);
+  color: #FF9800;
+}
+
+.session-status.accepted {
+  background: rgba(33, 150, 243, 0.2);
+  color: #2196F3;
+}
+
+.detail-content {
+  margin-bottom: 20px;
+}
+
+.detail-row {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.label {
+  width: 100px;
+  font-weight: bold;
+  color: var(--gray);
+}
+
+.value {
+  flex: 1;
+}
+
+.apply-section {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.applications-section {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.application-item {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.app-team {
+  display: flex;
+  align-items: center;
+  width: 40%;
+}
+
+.team-logo-sm {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 3px;
+}
+
+.app-message {
+  flex: 1;
+  padding: 0 15px;
+  color: var(--gray);
+  font-size: 0.9rem;
+}
+
+.app-actions {
+  width: 150px;
+  text-align: right;
+}
+
+.apply-form {
+  padding: 10px;
+}
+
+.form-header {
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.team-name {
+  color: var(--primary);
+  font-weight: bold;
+}
+
+.form-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+/* 战队排名样式 */
 .filters {
   display: flex;
   justify-content: space-between;

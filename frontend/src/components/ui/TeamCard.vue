@@ -85,7 +85,7 @@ function getLogoPath(logo) {
 
 <style scoped>
 .team-card {
-  background: rgba(15, 23, 42, 0.8);
+  background: rgba(15, 23, 41, 0.8);
   border-radius: 12px;
   padding: 25px;
   border: 1px solid rgba(93, 95, 239, 0.2);
