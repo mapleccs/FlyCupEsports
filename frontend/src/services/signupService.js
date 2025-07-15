@@ -1,5 +1,7 @@
 import axios from 'axios' // 使用统一的axios实例
 
+
+const API_URL = "/api"
 // 选手报名
 export function registerPlayer(playerData) {
   return axios.post('/api/players', playerData)

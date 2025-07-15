@@ -61,6 +61,7 @@ import RegionSelection from '@/components/signup/RegionSelection.vue';
 import PlayerSignupForm from '@/components/signup/PlayerSignupForm.vue';
 import TeamSignupForm from '@/components/signup/TeamSignupForm.vue';
 import PaymentDialog from '@/components/signup/PaymentDialog.vue';
+import { registerPlayer, createTeam } from '@/services/signupService';
 
 // --- 状态管理 ---
 
