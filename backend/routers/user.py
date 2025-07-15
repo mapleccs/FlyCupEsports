@@ -1,15 +1,12 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from backend.core.database import get_db
-from backend import models
+from backend.models.user import User
 
 router = APIRouter()
 
+
 @router.get("/users")
 async def get_users(db: Session = Depends(get_db)):
-    users = db.query(models.User).all()
+    users = db.query(User).all()
     return users
-
-@router.get("/ping")
-async def ping():
-    return {"msg": "pong"}
