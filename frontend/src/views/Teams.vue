@@ -3,7 +3,6 @@
     <div class="container">
       <h1 class="page-title">战队平台</h1>
 
-      <!-- 选项卡切换 -->
       <div class="tabs">
         <button
           :class="['tab-btn', { active: activeTab === 'ranking' }]"
@@ -12,12 +11,14 @@
           战队排名
         </button>
         <button
+          v-if="userStore.isCaptain"
           :class="['tab-btn', { active: activeTab === 'training' }]"
           @click="activeTab = 'training'"
         >
           训练赛预约
         </button>
         <button
+          v-if="userStore.isCaptain"
           :class="['tab-btn', { active: activeTab === 'my-training' }]"
           @click="activeTab = 'my-training'"
         >
@@ -25,9 +26,7 @@
         </button>
       </div>
 
-      <!-- 战队排行榜 -->
       <div v-if="activeTab === 'ranking'" class="tab-content">
-        <!-- 筛选区域 -->
         <div class="filters">
           <el-select v-model="selectedRegion" placeholder="选择赛区" class="region-filter">
             <el-option label="全部赛区" value="all"></el-option>
@@ -46,17 +45,14 @@
           </el-button>
         </div>
 
-        <!-- 加载状态 -->
         <div v-if="isLoading" class="loading-placeholder">
           <i class="el-icon-loading"></i> 加载战队数据中...
         </div>
 
-        <!-- 错误状态 -->
         <div v-else-if="error" class="error-message">
           <i class="el-icon-error"></i> {{ error }}
         </div>
 
-        <!-- 战队排行榜 -->
         <div v-else class="teams-container">
           <el-table :data="filteredTeams" style="width: 100%" stripe v-loading="isLoading">
             <el-table-column prop="rank" label="排名" width="80" sortable>
@@ -97,7 +93,6 @@
           </el-table>
         </div>
 
-        <!-- 战队详情弹窗 -->
         <el-dialog
           v-model="detailVisible"
           :title="currentTeam ? currentTeam.name : '战队详情'"
@@ -109,7 +104,6 @@
           </div>
         </el-dialog>
 
-        <!-- 战队对比弹窗 -->
         <el-dialog v-model="comparisonVisible" title="战队对比" width="90%">
           <TeamComparison
             v-if="teams.length > 0"
@@ -125,8 +119,7 @@
         </el-dialog>
       </div>
 
-      <!-- 训练赛预约市场 -->
-      <div v-if="activeTab === 'training'" class="tab-content">
+      <div v-if="activeTab === 'training' && userStore.isCaptain" class="tab-content">
         <div class="training-header">
           <h2>训练赛预约市场</h2>
           <el-button type="primary" @click="showSessionForm">
@@ -142,8 +135,7 @@
         />
       </div>
 
-      <!-- 我的预约管理 -->
-      <div v-if="activeTab === 'my-training'" class="tab-content">
+      <div v-if="activeTab === 'my-training' && userStore.isCaptain" class="tab-content">
         <div class="training-header">
           <h2>我的训练赛预约</h2>
           <el-button type="primary" @click="showSessionForm">
@@ -178,7 +170,6 @@
         </el-tabs>
       </div>
 
-      <!-- 发布/编辑训练赛表单弹窗 -->
       <el-dialog
         v-model="sessionFormVisible"
         :title="isEditingSession ? '编辑训练赛预约' : '发布训练赛预约'"
@@ -191,7 +182,6 @@
         />
       </el-dialog>
 
-      <!-- 预约详情弹窗 -->
       <el-dialog
         v-model="sessionDetailVisible"
         :title="currentSessionDetail ? currentSessionDetail.title : '训练赛详情'"
@@ -268,7 +258,6 @@
         </div>
       </el-dialog>
 
-      <!-- 申请预约表单弹窗 -->
       <el-dialog
         v-model="applyFormVisible"
         title="申请训练赛预约"
@@ -301,10 +290,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { getTeams } from '@/services/teamService'
-import TeamCard from '@/components/ui/TeamCard.vue'
-import TeamComparison from '@/components/ui/TeamComparison.vue'
+import { ref, computed, onMounted } from 'vue';
+// 1. 引入 useUserStore
+import { useUserStore } from '@/stores/userStore';
+import { getTeams } from '@/services/teamService';
+import TeamCard from '@/components/ui/TeamCard.vue';
+import TeamComparison from '@/components/ui/TeamComparison.vue';
 import {
   getTrainingSessions,
   createTrainingSession,
@@ -316,49 +307,53 @@ import {
   acceptApplication as acceptTrainingApplication,
   rejectApplication as rejectTrainingApplication,
   getTrainingHistory
-} from '@/services/trainingService'
-import TrainingSessionList from '@/components/ui/TrainingSessionList.vue'
-import TrainingSessionForm from '@/components/ui/TrainingSessionForm.vue'
+} from '@/services/trainingService';
+import TrainingSessionList from '@/components/ui/TrainingSessionList.vue';
+import TrainingSessionForm from '@/components/ui/TrainingSessionForm.vue';
+
+// 2. 初始化 userStore
+const userStore = useUserStore();
 
 // 当前用户（模拟）
-const currentUser = ref({
-  id: 1,
-  name: "IG战队",
-  isCaptain: true
-})
+// 注意：现在我们可以直接从 userStore 获取用户信息，不再需要模拟 currentUser
+// const currentUser = ref({
+//   id: 1,
+//   name: "IG战队",
+//   isCaptain: true
+// })
 
 // 状态管理
-const activeTab = ref('ranking')
-const mySessionsTab = ref('published')
-const sessionFormVisible = ref(false)
-const sessionDetailVisible = ref(false)
-const applyFormVisible = ref(false)
-const isEditingSession = ref(false)
+const activeTab = ref('ranking');
+const mySessionsTab = ref('published');
+const sessionFormVisible = ref(false);
+const sessionDetailVisible = ref(false);
+const applyFormVisible = ref(false);
+const isEditingSession = ref(false);
 
 // 战队排名相关状态
-const selectedRegion = ref('all')
-const detailVisible = ref(false)
-const comparisonVisible = ref(false)
-const currentTeam = ref(null)
-const selectedTeam1 = ref(null)
-const selectedTeam2 = ref(null)
-const isLoading = ref(false)
-const error = ref(null)
+const selectedRegion = ref('all');
+const detailVisible = ref(false);
+const comparisonVisible = ref(false);
+const currentTeam = ref(null);
+const selectedTeam1 = ref(null);
+const selectedTeam2 = ref(null);
+const isLoading = ref(false);
+const error = ref(null);
 
 // 数据
-const teams = ref([])
-const availableSessions = ref([])
-const myPublishedSessions = ref([])
-const myAppliedSessions = ref([])
-const sessionHistory = ref([])
-const currentSession = ref(null)
-const currentSessionDetail = ref(null)
-const currentApplySession = ref(null)
+const teams = ref([]);
+const availableSessions = ref([]);
+const myPublishedSessions = ref([]);
+const myAppliedSessions = ref([]);
+const sessionHistory = ref([]);
+const currentSession = ref(null);
+const currentSessionDetail = ref(null);
+const currentApplySession = ref(null);
 
 // 申请表单
 const applyForm = ref({
   message: ''
-})
+});
 
 // 计算胜率并排序
 const processedTeams = computed(() => {
@@ -368,129 +363,133 @@ const processedTeams = computed(() => {
       win_rate: team.win / (team.win + team.loss),
       total_matches: team.win + team.loss
     }))
-    .sort((a, b) => b.win_rate - a.win_rate)
-})
+    .sort((a, b) => b.win_rate - a.win_rate);
+});
 
 // 按赛区筛选
 const filteredTeams = computed(() => {
-  if (selectedRegion.value === 'all') return processedTeams.value
-  return processedTeams.value.filter(t => t.region === selectedRegion.value)
-})
+  if (selectedRegion.value === 'all') return processedTeams.value;
+  return processedTeams.value.filter(t => t.region === selectedRegion.value);
+});
 
 // 加载数据
 onMounted(async () => {
   try {
     // 加载战队数据
-    isLoading.value = true
-    teams.value = await getTeams()
+    isLoading.value = true;
+    teams.value = await getTeams(); //
     // 确保有数据再设置默认值
     if (teams.value.length >= 2) {
-      selectedTeam1.value = teams.value[0].id
-      selectedTeam2.value = teams.value[1].id
+      selectedTeam1.value = teams.value[0].id;
+      selectedTeam2.value = teams.value[1].id;
     }
-    isLoading.value = false
+    isLoading.value = false;
 
     // 加载训练赛数据
-    await loadTrainingData()
+    await loadTrainingData();
   } catch (err) {
-    console.error('加载数据失败:', err)
-    error.value = '加载战队数据失败，请稍后再试'
+    console.error('加载数据失败:', err);
+    error.value = '加载战队数据失败，请稍后再试';
   }
-})
+});
 
 // 加载训练赛相关数据
 async function loadTrainingData() {
-  availableSessions.value = await getTrainingSessions('available')
-  myPublishedSessions.value = await getTrainingSessions('my-published')
-  myAppliedSessions.value = await getMyApplications()
-  sessionHistory.value = await getTrainingHistory()
+  // 仅当用户是队长时才加载训练赛数据
+  if (userStore.isCaptain) {
+    availableSessions.value = await getTrainingSessions('available');
+    myPublishedSessions.value = await getTrainingSessions('my-published');
+    myAppliedSessions.value = await getMyApplications();
+    sessionHistory.value = await getTrainingHistory();
+  }
 }
 
 // 显示预约表单
 function showSessionForm() {
-  isEditingSession.value = false
-  currentSession.value = null
-  sessionFormVisible.value = true
+  isEditingSession.value = false;
+  currentSession.value = null;
+  sessionFormVisible.value = true;
 }
 
 // 编辑预约
 function editSession(session) {
-  isEditingSession.value = true
-  currentSession.value = { ...session }
-  sessionFormVisible.value = true
+  isEditingSession.value = true;
+  currentSession.value = { ...session };
+  sessionFormVisible.value = true;
 }
 
 // 处理预约提交
 async function handleSessionSubmit(sessionData) {
   if (isEditingSession.value) {
-    await updateTrainingSession(sessionData)
+    await updateTrainingSession(sessionData);
   } else {
-    await createTrainingSession(sessionData)
+    await createTrainingSession(sessionData);
   }
-  sessionFormVisible.value = false
-  loadTrainingData()
+  sessionFormVisible.value = false;
+  loadTrainingData();
 }
 
 // 查看预约详情
 function viewSessionDetail(session) {
-  currentSessionDetail.value = session
-  sessionDetailVisible.value = true
+  currentSessionDetail.value = session;
+  sessionDetailVisible.value = true;
 }
 
 // 查看申请列表
 function viewApplications(session) {
-  currentSessionDetail.value = session
-  sessionDetailVisible.value = true
+  currentSessionDetail.value = session;
+  sessionDetailVisible.value = true;
 }
 
 // 申请预约
 function applyForSession(session) {
-  currentApplySession.value = session
-  applyForm.value = { message: '' }
-  applyFormVisible.value = true
+  currentApplySession.value = session;
+  applyForm.value = { message: '' };
+  applyFormVisible.value = true;
 }
 
 // 提交申请
 async function submitApplication() {
-  if (!currentApplySession.value) return
+  if (!currentApplySession.value) return;
 
   await applyForTrainingSession({
     sessionId: currentApplySession.value.id,
     message: applyForm.value.message
-  })
+  });
 
-  applyFormVisible.value = false
-  loadTrainingData()
+  applyFormVisible.value = false;
+  loadTrainingData();
 }
 
 // 取消预约
 async function cancelSession(session) {
-  await cancelTrainingSession(session.id)
-  loadTrainingData()
+  await cancelTrainingSession(session.id);
+  loadTrainingData();
 }
 
 // 取消申请
 async function cancelMyApplication(application) {
-  await cancelTrainingApplication(application.id)
-  loadTrainingData()
+  await cancelTrainingApplication(application.id);
+  loadTrainingData();
 }
 
 // 接受申请
 async function acceptMyApplication(application) {
-  await acceptTrainingApplication(application.id)
-  loadTrainingData()
-  sessionDetailVisible.value = false
+  await acceptTrainingApplication(application.id);
+  loadTrainingData();
+  sessionDetailVisible.value = false;
 }
 
 // 拒绝申请
 async function rejectMyApplication(application) {
-  await rejectTrainingApplication(application.id)
-  loadTrainingData()
+  await rejectTrainingApplication(application.id);
+  loadTrainingData();
 }
 
 // 判断是否是我的预约
 function isMySession(session) {
-  return session.team.id === currentUser.value.id
+  // 使用 userStore 中的用户信息进行判断
+  return session.team.id === userStore.user?.teamId; // 假设 user 对象中有 teamId
 }
 
 // 获取状态文本
@@ -502,45 +501,46 @@ function getStatusText(status) {
     rejected: '已拒绝',
     completed: '已完成',
     cancelled: '已取消'
-  }
-  return statusMap[status] || status
+  };
+  return statusMap[status] || status;
 }
 
 // 格式化日期
 function formatDate(dateString) {
-  const options = { year: 'numeric', month: 'long', day: 'numeric' }
-  return new Date(dateString).toLocaleDateString(undefined, options)
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return new Date(dateString).toLocaleDateString(undefined, options);
 }
 
 // 获取Logo路径
 function getLogoPath(logo) {
-  return `/images/teams/${logo || 'default-logo.png'}`
+  return `/images/teams/${logo || 'default-logo.png'}`;
 }
 
 // 战队排名相关方法
 function showTeamDetail(team) {
-  currentTeam.value = team
-  detailVisible.value = true
+  currentTeam.value = team;
+  detailVisible.value = true;
 }
 
 function openComparison() {
-  comparisonVisible.value = true
+  comparisonVisible.value = true;
   // 确保有数据再设置默认值
   if (teams.value.length >= 2) {
-    selectedTeam1.value = teams.value[0].id
-    selectedTeam2.value = teams.value[1].id
+    selectedTeam1.value = teams.value[0].id;
+    selectedTeam2.value = teams.value[1].id;
   }
 }
 
 function getRankClass(rank) {
-  if (rank === 1) return 'rank-1'
-  if (rank === 2) return 'rank-2'
-  if (rank === 3) return 'rank-3'
-  return ''
+  if (rank === 1) return 'rank-1';
+  if (rank === 2) return 'rank-2';
+  if (rank === 3) return 'rank-3';
+  return '';
 }
 </script>
 
 <style scoped>
+/* 样式保持不变 */
 .teams-page {
   padding: 40px 20px;
   background: var(--darker);

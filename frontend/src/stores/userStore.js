@@ -10,46 +10,58 @@ export const useUserStore = defineStore('user', () => {
   const isAuthenticated = ref(!!token.value)
   const router = useRouter()
 
-  // 初始化时尝试获取用户信息
-  const init = async () => {
-    if (token.value) {
-      try {
-        const userData = await fetchUserProfile()
-        user.value = userData
-      } catch (error) {
-        console.error('获取用户信息失败:', error)
-        logout()
-      }
-    }
-  }
-
-  // 登录方法
-  const login = async (credentials) => {
-    try {
-      const { user: userData, token: authToken } = await loginUser(credentials)
+// 在 init 方法中确保正确处理认证
+const init = async () => {
+  try {
+    const token = localStorage.getItem('authToken')
+    if (token) {
+      console.log('检测到本地 token, 尝试获取用户信息')
+      const userData = await fetchUserProfile()
       user.value = userData
-      token.value = authToken
       isAuthenticated.value = true
-      localStorage.setItem('authToken', authToken)
-      return userData
-    } catch (error) {
-      throw error
+      console.log('用户信息初始化成功:', userData)
     }
+  } catch (error) {
+    console.error('初始化用户信息失败:', error)
+    logout()
   }
+}
 
-  // 注册方法
-  const register = async (userData) => {
-    try {
-      const { user: newUser, token: authToken } = await registerUser(userData)
-      user.value = newUser
-      token.value = authToken
-      isAuthenticated.value = true
-      localStorage.setItem('authToken', authToken)
-      return newUser
-    } catch (error) {
-      throw error
-    }
+// 在 login 方法中添加调试信息
+const login = async (credentials) => {
+  try {
+    console.log('尝试登录:', credentials)
+    const { user: userData, token: authToken } = await loginUser(credentials)
+    console.log('登录响应:', { userData, authToken })
+
+    user.value = userData
+    token.value = authToken
+    isAuthenticated.value = true
+    localStorage.setItem('authToken', authToken)
+    return userData
+  } catch (error) {
+    console.error('登录错误:', error)
+    throw error
   }
+}
+
+// 在 register 方法中添加调试信息
+const register = async (userData) => {
+  try {
+    console.log('尝试注册:', userData)
+    const { user: newUser, token: authToken } = await registerUser(userData)
+    console.log('注册响应:', { newUser, authToken })
+
+    user.value = newUser
+    token.value = authToken
+    isAuthenticated.value = true
+    localStorage.setItem('authToken', authToken)
+    return newUser
+  } catch (error) {
+    console.error('注册错误:', error)
+    throw error
+  }
+}
 
   // 登出方法
   const logout = () => {

@@ -1,24 +1,28 @@
 import sys
 import os
-
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-
 from fastapi import FastAPI
 from backend.core.database import init_db
 from backend.routers import router
 
+
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+
+
 app = FastAPI(title="FlyCup")
 
+init_db()
 
-@app.on_event("startup")
-def on_startup():
-    init_db()
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:8080"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(router, prefix="/api")
-
 
 if __name__ == '__main__':
     uvicorn.run("main:app", reload=True)

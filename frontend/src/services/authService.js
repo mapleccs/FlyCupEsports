@@ -1,25 +1,33 @@
 // services/authService.js
 import axios from 'axios'
 
-const API_URL = 'http://localhost:8000/api/auth' // 根据实际后端API调整
 
-// 用户登录
+// 更新 API 基础路径
+const API_URL = 'http://localhost:8000/api/v1/auth'  // 确保与后端一致
+
+// 登录方法 - 添加详细的错误处理
 export const loginUser = async (credentials) => {
   try {
     const response = await axios.post(`${API_URL}/login`, credentials)
     return response.data
   } catch (error) {
-    throw new Error(error.response?.data?.message || '登录失败，请稍后再试')
+    const errorMsg = error.response?.data?.detail ||
+                    error.response?.data?.message ||
+                    '登录失败，请检查用户名或密码'
+    throw new Error(errorMsg)
   }
 }
 
-// 用户注册
+// 注册方法 - 添加详细的错误处理
 export const registerUser = async (userData) => {
   try {
     const response = await axios.post(`${API_URL}/register`, userData)
     return response.data
   } catch (error) {
-    throw new Error(error.response?.data?.message || '注册失败，请稍后再试')
+    const errorMsg = error.response?.data?.detail ||
+                    error.response?.data?.message ||
+                    '注册失败，请检查输入信息'
+    throw new Error(errorMsg)
   }
 }
 
