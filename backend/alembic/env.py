@@ -10,7 +10,6 @@ from sqlalchemy import engine_from_config, pool
 from alembic import context
 
 from backend.models.base import Base  # 这里导入你的 Base
-from backend.models import *
 
 config = context.config
 
