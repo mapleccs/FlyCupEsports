@@ -1,8 +1,8 @@
 from typing import List, Optional
 from sqlalchemy import Integer, VARCHAR, TEXT
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from .base import Base
-from .role_permission import t_RolePermission  # 中间表
+from backend.models.base import Base
+from backend.models.role_permission import t_RolePermission  # 中间表
 
 class Role(Base):
     __tablename__ = 'Role'

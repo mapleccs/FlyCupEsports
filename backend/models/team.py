@@ -5,7 +5,7 @@ from sqlalchemy.dialects.mysql import TEXT, TINYINT, VARCHAR
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 import datetime
 import decimal
-from .base import Base
+from backend.models.base import Base
 
 class Team(Base):
     __tablename__ = 'Team'

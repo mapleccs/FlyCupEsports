@@ -2,7 +2,7 @@ from typing import List
 from sqlalchemy import Integer, VARCHAR
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from .base import Base
+from backend.models.base import Base
 
 class ContactType(Base):
     __tablename__ = 'ContactType'

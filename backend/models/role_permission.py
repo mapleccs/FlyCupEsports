@@ -1,5 +1,5 @@
 from sqlalchemy import Table, Column, Integer, ForeignKey, Index
-from .base import Base
+from backend.models.base import Base
 
 t_RolePermission = Table(
     'RolePermission', Base.metadata,

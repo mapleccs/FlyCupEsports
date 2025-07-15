@@ -1,9 +1,9 @@
 from typing import List, Optional
 from sqlalchemy import Integer, VARCHAR, TEXT
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from .role_permission import t_RolePermission  # 中间表
+from backend.models.role_permission import t_RolePermission  # 中间表
 
-from .base import Base
+from backend.models.base import Base
 
 class Permission(Base):
     __tablename__ = 'Permission'

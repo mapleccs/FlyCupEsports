@@ -1,21 +1,23 @@
 import sys
 import os
+
+# 把 backend 目录加入 sys.path，保证可以导入 models
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 
-# 把 backend 目录加入 sys.path，保证可以导入 models
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from models.base import Base  # 这里导入你的 Base
-from models import *
+from backend.models.base import Base  # 这里导入你的 Base
+from backend.models import *
 
 config = context.config
 
 fileConfig(config.config_file_name)
 
 target_metadata = Base.metadata
+
 
 def run_migrations_offline():
     url = config.get_main_option("sqlalchemy.url")
@@ -28,6 +30,7 @@ def run_migrations_offline():
 
     with context.begin_transaction():
         context.run_migrations()
+
 
 def run_migrations_online():
     connectable = engine_from_config(
@@ -44,6 +47,7 @@ def run_migrations_online():
 
         with context.begin_transaction():
             context.run_migrations()
+
 
 if context.is_offline_mode():
     run_migrations_offline()
