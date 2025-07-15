@@ -12,9 +12,9 @@ class User(Base):
     __tablename__ = 'User'
 
     Id: Mapped[int] = mapped_column(Integer, primary_key=True, comment='用户编号')
-    UserName: Mapped[str] = mapped_column(VARCHAR(20), comment='用户名称')
-    Password: Mapped[str] = mapped_column(VARCHAR(20), comment='密码')
-    UserPhoto: Mapped[Optional[str]] = mapped_column(VARCHAR(255), comment='用户头像路径')
+    UserName: Mapped[str] = mapped_column(String(20), unique=True, comment='用户名称')
+    Password: Mapped[str] = mapped_column(String(20), comment='密码')
+    UserPhoto: Mapped[Optional[str]] = mapped_column(String(255), comment='用户头像路径')
 
     Competitor: Mapped[List['Competitor']] = relationship('Competitor', back_populates='User_')
 
