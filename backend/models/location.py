@@ -11,5 +11,5 @@ class Location(Base):
     Name: Mapped[Optional[str]] = mapped_column(String(255), comment='游戏位置：Top、Jungle')
     Remark: Mapped[Optional[str]] = mapped_column(String(255))
 
-    Competitor: Mapped[List['Competitor']] = relationship('Competitor', foreign_keys='[Competitor.PrimaryLocationId]', back_populates='Location_')
-    Competitor_: Mapped[List['Competitor']] = relationship('Competitor', foreign_keys='[Competitor.SecondaryLocationId]', back_populates='Location1')
+    PrimaryLocationCompetitor: Mapped[List['Competitor']] = relationship('Competitor', foreign_keys='[Competitor.PrimaryLocationId]', back_populates='PrimaryLocation')
+    SecondaryLocationCompetitor: Mapped[List['Competitor']] = relationship('Competitor', foreign_keys='[Competitor.SecondaryLocationId]', back_populates='SecondaryLocation')

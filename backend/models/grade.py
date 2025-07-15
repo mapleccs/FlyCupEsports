@@ -11,8 +11,8 @@ class Grade(Base):
     Name: Mapped[str] = mapped_column(String(255), comment='段位')
     Remark: Mapped[Optional[str]] = mapped_column(String(255))
 
-    Competitor: Mapped[List['Competitor']] = relationship('Competitor', foreign_keys='[Competitor.CurrentGradeId]',
-                                                          back_populates='Grade_')
-    Competitor_: Mapped[List['Competitor']] = relationship('Competitor', foreign_keys='[Competitor.HighestGradeId]',
-                                                           back_populates='Grade1')
+    CurrentGradeCompetitor: Mapped[List['Competitor']] = relationship('Competitor', foreign_keys='[Competitor.CurrentGradeId]',
+                                                          back_populates='CurrentGrade')
+    HighestGradeCompetitor: Mapped[List['Competitor']] = relationship('Competitor', foreign_keys='[Competitor.HighestGradeId]',
+                                                           back_populates='HighestGrade')
 

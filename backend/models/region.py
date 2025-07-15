@@ -7,7 +7,6 @@ import datetime
 import decimal
 from backend.models.base import Base
 
-
 class Region(Base):
     __tablename__ = 'Region'
     __table_args__ = (
@@ -26,6 +25,10 @@ class Region(Base):
     StartCompetitionDate: Mapped[datetime.datetime] = mapped_column(DateTime, comment='比赛开始日期')
     EndCompetitionDate: Mapped[datetime.datetime] = mapped_column(DateTime, comment='比赛结束日期')
 
-    Season_: Mapped['Season'] = relationship('Season', back_populates='Region')
-    User_: Mapped['User'] = relationship('User', back_populates='Region')
-    RegionTeam: Mapped[List['RegionTeam']] = relationship('RegionTeam', back_populates='Region_')
+    Season: Mapped['Season'] = relationship('Season', back_populates='Regions')
+    User: Mapped['User'] = relationship('User', back_populates='Regions')
+    Competitor:Mapped['Competitor']=relationship('Competitor', back_populates='Regions')
+
+
+
+
