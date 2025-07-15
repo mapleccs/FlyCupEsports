@@ -4,6 +4,10 @@ import Teams from '@/views/Teams.vue'
 import Signup from "@/views/Signup.vue";
 import Recruitment from "@/views/Recruitment.vue";
 import Profile  from "@/views/Profile.vue";
+import Login from "@/views/Login.vue";
+import Register from "@/views/Register.vue";
+import { useUserStore } from "@/stores/userStore";
+
 
 const routes = [
   {
@@ -11,6 +15,8 @@ const routes = [
     component: () => import('@/layouts/MainLayout.vue'),
     children: [
         { path: '/', name: 'Home', component: Home },
+        { path: '/login', name: 'Login', component: Login },
+        { path: '/register', name: 'Register', component: Register },
         { path: '/teams', name: 'Teams', component: Teams },
         { path: '/signup', name: 'Signup', component: Signup },
         { path: '/recruitment', name: 'Recruitment', component: Recruitment },
@@ -38,6 +44,40 @@ const router = createRouter({
       return { top: 0 }
     }
   }
+})
+
+// 路由守卫
+router.beforeEach(async (to, from, next) => {
+  const userStore = useUserStore()
+
+  // 根据角色设置页面访问权限
+  const rolePermissions = {
+    user: ['/', '/home', '/events', '/teams', '/recruitment', '/login', '/register'],
+    player: ['/', '/home', '/events', '/teams', '/recruitment', '/profile', '/signup'],
+    captain: ['/', '/home', '/events', '/teams', '/recruitment', '/profile', '/signup', '/team-manage'],
+    admin: ['*'] // 管理员可以访问所有页面
+  }
+
+  // 检查是否需要认证
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!userStore.isAuthenticated) {
+      next({ name: 'Login', query: { redirect: to.fullPath } })
+    } else {
+      // 检查用户角色是否有权限访问
+      const allowedRoutes = rolePermissions[userStore.user?.role] || []
+      if (
+        userStore.isAdmin() ||
+        allowedRoutes.includes('*') ||
+        allowedRoutes.includes(to.path) ||
+        allowedRoutes.some(route => to.path.startsWith(route))
+      ) {
+        next()
+      } else {
+        next({ name: 'NotAuthorized' }) // 创建无权限页面
+      }
+    }
+  }
+  // ...其他验证逻辑...
 })
 
 export default createRouter({

@@ -1,4 +1,6 @@
 import axios from 'axios' // 使用统一的axios实例
+import { useUserStore } from '@/stores/userStore'
+
 
 
 const API_URL = "/api"
@@ -27,4 +29,22 @@ export function uploadLogo(file) {
       'Content-Type': 'multipart/form-data'
     }
   })
+}
+
+export const submitSignup = async (formData, type) => {
+  try {
+    const response = await axios.post('/api/signup', { ...formData, type })
+    const userStore = useUserStore()
+
+    // 根据报名类型升级用户角色
+    if (type === 'player') {
+      userStore.upgradeToPlayer()
+    } else if (type === 'team') {
+      userStore.upgradeToCaptain()
+    }
+
+    return response.data
+  } catch (error) {
+    throw new Error(error.response?.data?.message || '报名失败')
+  }
 }

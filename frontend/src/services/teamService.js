@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { useUserStore } from '@/stores/userStore'
 
 export async function getTeams() {
   try {
@@ -10,5 +11,19 @@ export async function getTeams() {
   } catch (error) {
     console.error('获取战队数据失败:', error)
     throw error
+  }
+}
+
+export const createTeam = async (teamData) => {
+  try {
+    const response = await axios.post('/api/teams', teamData)
+    const userStore = useUserStore()
+
+    // 升级用户为队长
+    userStore.upgradeToCaptain()
+
+    return response.data
+  } catch (error) {
+    throw new Error(error.response?.data?.message || '创建战队失败')
   }
 }
