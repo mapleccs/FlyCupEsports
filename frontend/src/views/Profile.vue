@@ -3,6 +3,18 @@
     <div class="container">
       <UserProfileCard :user="user" :stats="userStats" />
 
+      <!-- 添加雷达图展示区域 -->
+      <div class="player-radar-chart" v-if="isPlayer || isCaptain">
+        <h3 class="section-title">个人选手数据雷达图</h3>
+        <div ref="radarChart" class="radar-chart-container"></div>
+        <div class="radar-legend">
+          <div v-for="(item, index) in radarData.indicator" :key="index" class="legend-item">
+            <div class="legend-color" :style="{ backgroundColor: legendColors[index] }"></div>
+            <span>{{ item.name }}: {{ radarData.value[index] }}</span>
+          </div>
+        </div>
+      </div>
+
       <div class="role-sections">
         <AdminPanel v-if="isAdmin" @navigate="navigateToAdminPage" />
 
@@ -35,9 +47,10 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
+import * as echarts from 'echarts';
 
 // 导入子组件
 import UserProfileCard from '@/components/profile/UserProfileCard.vue';
@@ -57,14 +70,18 @@ const user = ref({
   id: 1,
   username: '雷霆万钧',
   email: 'thunder@example.com',
-  role: 'captain', // 可切换 'guest', 'player', 'captain', 'admin' 来测试不同视图
+  role: 'player', // 可切换 'guest', 'player', 'captain', 'admin' 来测试不同视图
   avatar: null, // 可以是图片URL
+  position: 'mid', // 玩家位置
+  rank: '钻石Ⅲ', // 玩家段位
 });
 
 const userStats = ref({
   gamesPlayed: 42,
   winRate: '68%',
   teamCount: 1,
+  kda: 4.2, // KDA数据
+  csPerMin: 7.8, // 分均补刀
 });
 
 const userTeam = ref({
@@ -99,7 +116,26 @@ const userSettings = ref({
   gameId: 'ThunderKing',
   mainPosition: 'mid',
 });
+
+// 雷达图数据
+const radarData = ref({
+  indicator: [
+    { name: 'KDA', max: 5 },
+    { name: '分均补刀', max: 10 },
+    { name: '参团率', max: 100 },
+    { name: '伤害转化', max: 150 },
+    { name: '视野控制', max: 5 },
+    { name: '生存能力', max: 10 }
+  ],
+  value: [4.2, 7.8, 68, 127, 3.4, 7.2]
+});
+
+const legendColors = ref(['#5d5fef', '#ff4655', '#0ea5e9', '#10b981', '#f59e0b', '#8b5cf6']);
 // --- 模拟数据结束 ---
+
+// ECharts实例管理
+const radarChart = ref(null);
+const radarChartRef = ref(null);
 
 // 角色计算属性
 const isAdmin = computed(() => user.value.role === 'admin');
@@ -126,6 +162,133 @@ const saveSettings = (settings) => {
   userSettings.value = { ...settings };
   ElMessage.success('账户设置已保存！');
 };
+
+// 初始化雷达图
+const initRadarChart = () => {
+  if (!radarChartRef.value) {
+    console.error('雷达图容器未找到');
+    return;
+  }
+
+  // 如果已经存在实例，先销毁
+  if (radarChart.value && typeof radarChart.value.dispose === 'function') {
+    radarChart.value.dispose();
+    radarChart.value = null;
+  }
+
+  try {
+    // 创建新的图表实例
+    radarChart.value = echarts.init(radarChartRef.value, 'dark');
+
+    const option = {
+      tooltip: {
+        trigger: 'item',
+        formatter: function(params) {
+          return `${params.name}: ${params.value}`;
+        }
+      },
+      radar: {
+        indicator: radarData.value.indicator,
+        radius: '65%',
+        center: ['50%', '50%'],
+        axisName: {
+          color: '#94a3b8',
+          fontSize: 12,
+          padding: [3, 5],
+          backgroundColor: 'rgba(15, 23, 42, 0.7)',
+          borderRadius: 3
+        },
+        splitArea: {
+          areaStyle: {
+            color: ['rgba(30, 41, 59, 0.5)', 'rgba(30, 41, 59, 0.3)']
+          }
+        },
+        splitLine: {
+          lineStyle: {
+            color: 'rgba(148, 163, 184, 0.3)'
+          }
+        },
+        axisLine: {
+          lineStyle: {
+            color: 'rgba(148, 163, 184, 0.5)'
+          }
+        }
+      },
+      series: [{
+        type: 'radar',
+        data: [{
+          value: radarData.value.value,
+          name: '选手能力值',
+          symbol: 'circle',
+          symbolSize: 8,
+          lineStyle: {
+            width: 2,
+            color: '#5d5fef'
+          },
+          areaStyle: {
+            color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+              { offset: 0, color: 'rgba(93, 95, 239, 0.4)' },
+              { offset: 1, color: 'rgba(93, 95, 239, 0.1)' }
+            ])
+          },
+          itemStyle: {
+            color: '#5d5fef'
+          },
+          label: {
+            show: true,
+            formatter: function(params) {
+              return params.value;
+            },
+            position: 'top',
+            color: '#e2e8f0',
+            fontSize: 12
+          }
+        }]
+      }],
+      backgroundColor: 'transparent',
+      textStyle: {
+        color: '#e2e8f0'
+      }
+    };
+
+    radarChart.value.setOption(option);
+
+    console.log('雷达图初始化成功');
+
+    // 添加窗口大小变化监听
+    window.addEventListener('resize', handleResize);
+  } catch (error) {
+    console.error('雷达图初始化失败:', error);
+  }
+};
+
+// 窗口大小调整处理函数
+const handleResize = () => {
+  if (radarChart.value && typeof radarChart.value.resize === 'function') {
+    radarChart.value.resize();
+  }
+};
+
+// 组件挂载后初始化图表
+onMounted(() => {
+  nextTick(() => {
+    if (isPlayer.value || isCaptain.value) {
+      initRadarChart();
+    }
+  });
+});
+
+// 组件卸载前清理资源
+onBeforeUnmount(() => {
+  // 销毁图表实例
+  if (radarChart.value && typeof radarChart.value.dispose === 'function') {
+    radarChart.value.dispose();
+    radarChart.value = null;
+  }
+
+  // 移除事件监听器
+  window.removeEventListener('resize', handleResize);
+});
 </script>
 
 <style scoped>
@@ -145,5 +308,88 @@ const saveSettings = (settings) => {
   grid-template-columns: 1fr;
   gap: 30px;
   margin-top: 30px;
+}
+
+/* 雷达图样式 */
+.player-radar-chart {
+  margin-top: 30px;
+  background: rgba(15, 23, 42, 0.7);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid rgba(93, 95, 239, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.section-title {
+  color: white;
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+  text-align: center;
+  background: linear-gradient(to right, #5d5fef, #ff4655);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+}
+
+.radar-chart-container {
+  height: 400px;
+  width: 100%;
+}
+
+.radar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #cbd5e1;
+  font-size: 0.95rem;
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .radar-chart-container {
+    height: 300px;
+  }
+
+  .radar-legend {
+    gap: 12px;
+  }
+
+  .legend-item {
+    font-size: 0.85rem;
+  }
+
+  .section-title {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .player-radar-chart {
+    padding: 15px;
+  }
+
+  .radar-chart-container {
+    height: 250px;
+  }
+
+  .radar-legend {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
 }
 </style>

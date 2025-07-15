@@ -1,50 +1,49 @@
 <template>
-  <div class="create-player-post-form">
-    <el-form :model="form" :rules="rules" ref="playerPostForm" label-position="top">
+  <div class="create-player-post">
+    <el-form :model="form" :rules="rules" ref="playerForm" label-position="top">
       <el-form-item label="求职标题" prop="title">
-        <el-input v-model="form.title" placeholder="例如：钻石全能补位选手求职" />
+        <el-input v-model="form.title" placeholder="例如：钻石中单寻求稳定队伍"></el-input>
       </el-form-item>
 
-      <el-form-item label="擅长位置 (可多选)" prop="positions">
-        <el-select v-model="form.positions" multiple placeholder="请选择你擅长的位置" style="width: 100%;">
-          <el-option label="上单" value="Top"></el-option>
-          <el-option label="打野" value="Jungle"></el-option>
-          <el-option label="中单" value="Mid"></el-option>
-          <el-option label="ADC" value="ADC"></el-option>
-          <el-option label="辅助" value="Support"></el-option>
-        </el-select>
+      <el-form-item label="擅长位置" prop="positions">
+        <el-checkbox-group v-model="form.positions">
+          <el-checkbox label="Top">上单</el-checkbox>
+          <el-checkbox label="Jungle">打野</el-checkbox>
+          <el-checkbox label="Mid">中单</el-checkbox>
+          <el-checkbox label="ADC">ADC</el-checkbox>
+          <el-checkbox label="Support">辅助</el-checkbox>
+        </el-checkbox-group>
       </el-form-item>
 
       <el-form-item label="当前段位" prop="rank">
-        <el-select v-model="form.rank" placeholder="请选择你当前的段位" style="width: 100%;">
-          <el-option label="王者" value="Challenger"></el-option>
-          <el-option label="宗师" value="Grandmaster"></el-option>
-          <el-option label="大师" value="Master"></el-option>
-          <el-option label="钻石" value="Diamond"></el-option>
-          <el-option label="翡翠" value="Emerald"></el-option>
-          <el-option label="铂金" value="Platinum"></el-option>
-          <el-option label="黄金" value="Gold"></el-option>
-          <el-option label="白银" value="Silver"></el-option>
-          <el-option label="青铜" value="Bronze"></el-option>
-          <el-option label="黑铁" value="Iron"></el-option>
+        <el-select v-model="form.rank" placeholder="请选择段位" clearable>
+          <el-option label="黑铁" value="黑铁"></el-option>
+          <el-option label="青铜" value="青铜"></el-option>
+          <el-option label="白银" value="白银"></el-option>
+          <el-option label="黄金" value="黄金"></el-option>
+          <el-option label="铂金" value="铂金"></el-option>
+          <el-option label="翡翠" value="翡翠"></el-option>
+          <el-option label="钻石" value="钻石"></el-option>
+          <el-option label="大师" value="大师"></el-option>
+          <el-option label="宗师" value="宗师"></el-option>
+          <el-option label="王者" value="王者"></el-option>
         </el-select>
       </el-form-item>
 
-      <el-form-item label="所在服务器" prop="server">
-        <el-input v-model="form.server" placeholder="例如：艾欧尼亚" />
-      </el-form-item>
-
-      <el-form-item label="自我介绍" prop="description">
+      <el-form-item label="个人介绍" prop="description">
         <el-input
           v-model="form.description"
           type="textarea"
           :rows="4"
-          placeholder="介绍你的游戏风格、在线时间、目标等..."
-        />
+          placeholder="请介绍你的游戏风格、擅长英雄、在线时间等信息"
+        ></el-input>
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" @click="submitForm" style="width: 100%;">确认发布</el-button>
+        <div class="form-actions">
+          <el-button @click="$emit('close')">取消</el-button>
+          <el-button type="primary" @click="publish">确认发布</el-button>
+        </div>
       </el-form-item>
     </el-form>
   </div>
@@ -54,35 +53,34 @@
 import { ref } from 'vue';
 import { ElMessage } from 'element-plus';
 
-const emit = defineEmits(['submit']);
-const playerPostForm = ref(null);
+const emit = defineEmits(['close', 'publish']);
+const playerForm = ref(null);
 
-// 表单数据模型
 const form = ref({
   title: '',
   positions: [],
   rank: '',
-  server: '',
-  description: '',
-  playerName: '当前登录用户' // 实际开发中应从store或prop获取
+  description: ''
 });
 
-// 表单验证规则
-const rules = ref({
-  title: [{ required: true, message: '请输入一个吸引人的标题', trigger: 'blur' }],
-  positions: [{ required: true, message: '请至少选择一个擅长位置', trigger: 'change' }],
-  rank: [{ required: true, message: '请选择你的当前段位', trigger: 'change' }],
-  description: [{ required: true, message: '请填写自我介绍', trigger: 'blur' }],
-});
+const rules = {
+  title: [{ required: true, message: '请输入求职标题', trigger: 'blur' }],
+  positions: [{ required: true, type: 'array', message: '请至少选择一个位置', trigger: 'change' }],
+  rank: [{ required: true, message: '请选择段位', trigger: 'change' }],
+  description: [{ required: true, message: '请输入个人介绍', trigger: 'blur' }]
+};
 
-// 提交表单
-const submitForm = () => {
-  playerPostForm.value.validate((valid) => {
+const publish = () => {
+  playerForm.value.validate((valid) => {
     if (valid) {
-      // 触发 'submit' 事件，并传递表单数据
-      emit('submit', { ...form.value });
+      // 验证通过，发布信息
+      emit('publish', {
+        ...form.value,
+        playerName: '当前用户', // 实际应用中应从用户信息获取
+        createdAt: new Date()
+      });
     } else {
-      ElMessage.error('请检查表单并填写所有必填项');
+      ElMessage.error('请填写完整的信息');
       return false;
     }
   });
@@ -90,7 +88,9 @@ const submitForm = () => {
 </script>
 
 <style scoped>
-.create-player-post-form {
-  padding: 10px 20px;
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
 }
 </style>
