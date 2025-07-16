@@ -106,23 +106,41 @@ const rules = {
   ]
 }
 
-const handleRegister = async () => {
+const registerMessage = ref('')
+
+async function handleRegister() {
+  // 检查用户是否同意协议
   if (!agreement.value) {
     ElMessage.warning('请阅读并同意服务条款和隐私政策')
     return
   }
 
+  loading.value = true
   try {
-    loading.value = true
+    const { success, message } = await userStore.register(form.value)
 
-    // 移除确认密码字段
-    const { confirmPassword, ...registerData } = form.value
-    await userStore.register(registerData)
+    if (success) {
+      // 注册成功，显示消息并跳转到登录页面
+      ElMessage.success({
+        message: message || '注册成功，请登录',
+        duration: 2000
+      })
 
-    ElMessage.success('注册成功！')
-    router.push('/login')
+      // 延迟跳转让用户看到成功消息
+      setTimeout(() => {
+        router.push('/login')
+      }, 1500)
+    } else {
+      // 注册失败，显示错误信息
+      ElMessage.error(message || '注册失败，请稍后再试')
+    }
   } catch (error) {
-    ElMessage.error(error.message || '注册失败，请稍后再试')
+    // 捕获异常，特别是用户名重复的情况
+    if (error.message.includes('用户名') || error.message.includes('已存在')) {
+      ElMessage.error('用户名已被使用，请选择其他用户名')
+    } else {
+      ElMessage.error(error.message || '注册过程中发生错误')
+    }
   } finally {
     loading.value = false
   }

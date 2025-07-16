@@ -115,11 +115,11 @@ const navItems = ref([
   { path: '/live', title: '直播', icon: 'el-icon-video-camera', roles: ['user', 'player', 'captain', 'admin'] },
   { path: '/schedule', title: '赛程', icon: 'el-icon-date', roles: ['player', 'captain', 'admin'] },
   { path: '/teams', title: '战队', icon: 'el-icon-trophy', roles: ['user', 'player', 'captain', 'admin'] },
-  { path: '/stats', title: '数据', icon: 'el-icon-data-analysis', roles: ['captain', 'admin'], roleRequired: '队长+' },
+  { path: '/stats', title: '数据', icon: 'el-icon-data-analysis', roles: ['captain', 'admin']},
   { path: '/recruitment', title: '招募', icon: 'el-icon-user-solid', roles: ['player', 'captain', 'admin'] },
-  { path: '/signup', title: '报名', icon: 'el-icon-edit', roles: ['user'], roleRequired: '普通用户' },
-  { path: '/partners', title: '合作', icon: 'el-icon-handshake', roles: ['admin'], roleRequired: '管理员' },
-  { path: '/admin', title: '管理', icon: 'el-icon-s-tools', roles: ['admin'], roleRequired: '管理员' }
+  { path: '/signup', title: '报名', icon: 'el-icon-edit', roles: ['user'] },
+  { path: '/partners', title: '合作', icon: 'el-icon-handshake', roles: ['admin'] },
+  { path: '/admin', title: '管理', icon: 'el-icon-s-tools', roles: ['admin'] }
 ])
 
 // 根据用户角色过滤导航项

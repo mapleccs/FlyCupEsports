@@ -11,14 +11,14 @@
           战队排名
         </button>
         <button
-          v-if="userStore.isCaptain"
+          v-if="userStore.isCaptain || userStore.isAdmin"
           :class="['tab-btn', { active: activeTab === 'training' }]"
           @click="activeTab = 'training'"
         >
           训练赛预约
         </button>
         <button
-          v-if="userStore.isCaptain"
+          v-if="userStore.isCaptain || userStore.isAdmin"
           :class="['tab-btn', { active: activeTab === 'my-training' }]"
           @click="activeTab = 'my-training'"
         >
@@ -119,7 +119,7 @@
         </el-dialog>
       </div>
 
-      <div v-if="activeTab === 'training' && userStore.isCaptain" class="tab-content">
+      <div v-if="activeTab === 'training' && (userStore.isCaptain || userStore.isAdmin)" class="tab-content">
         <div class="training-header">
           <h2>训练赛预约市场</h2>
           <el-button type="primary" @click="showSessionForm">
@@ -135,7 +135,7 @@
         />
       </div>
 
-      <div v-if="activeTab === 'my-training' && userStore.isCaptain" class="tab-content">
+      <div v-if="activeTab === 'my-training' && (userStore.isCaptain || userStore.isAdmin)" class="tab-content">
         <div class="training-header">
           <h2>我的训练赛预约</h2>
           <el-button type="primary" @click="showSessionForm">

@@ -7,14 +7,18 @@
     @update:model-value="$emit('update:visible', $event)"
   >
     <CreateRecruitment
-      v-if="type === 'team'"
+      v-if="type === 'team' && (userStore.isCaptain || userStore.isAdmin)"
       @publish="handlePublish"
     />
 
     <CreatePlayerPost
-      v-if="type === 'player'"
+      v-if="type === 'player' && (userStore.isPlayer || userStore.isCaptain || userStore.isAdmin)"
       @publish="handlePublish"
     />
+
+    <div v-else class="text-center pa-4 grey--text">
+      您的权限不足，无法发布此类型的招募信息
+    </div>
   </el-dialog>
 </template>
 
@@ -22,6 +26,9 @@
 import { defineProps, defineEmits } from 'vue';
 import CreateRecruitment from '@/components/team/CreateRecruitment.vue';
 import CreatePlayerPost from '@/components/recruitment/CreatePlayerPost.vue';
+import { useUserStore } from "@/stores/userStore";
+
+const userStore = useUserStore();
 
 // 从父组件接收 Props
 defineProps({

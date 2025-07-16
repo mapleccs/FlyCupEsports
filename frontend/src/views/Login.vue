@@ -83,9 +83,9 @@ const handleLogin = async () => {
 
     // 根据角色重定向
     if (userStore.isAdmin) {
-      await router.push('/admin')
+      await router.push('/')
     } else if (userStore.isCaptain) {
-      await router.push('/teams/manage')
+      await router.push('/')
     } else {
       await router.push('/profile')
     }

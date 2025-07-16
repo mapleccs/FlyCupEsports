@@ -1,5 +1,6 @@
 from typing import List
 
+import loguru
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from backend.schemas.v1.user import UserCreateRequest, UserCreateResponse, UserInfoResponse, UserLoginRequest, \
@@ -30,6 +31,7 @@ def get_all_users_service(db: Session) -> List[UserInfoResponse]:
 
 
 def register_user_services(db: Session, user_data: UserCreateRequest) -> UserCreateResponse:
+    role_capitalized = user_data.role.capitalize()
     existing_user = get_user_by_username(db, user_data.username)
 
     if existing_user:
@@ -38,7 +40,8 @@ def register_user_services(db: Session, user_data: UserCreateRequest) -> UserCre
             detail="User with this username already exists.",
         )
 
-    role = get_role_by_name(db, user_data.role)
+    role = get_role_by_name(db, role_capitalized)
+
     if not role:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
