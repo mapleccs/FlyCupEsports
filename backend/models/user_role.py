@@ -1,6 +1,7 @@
 from typing import List, Optional
 
-from sqlalchemy import Column, DECIMAL, DateTime, ForeignKeyConstraint, Index, Integer, String, Table, Text
+from sqlalchemy import Column, DECIMAL, DateTime, ForeignKeyConstraint, Index, Integer, String, Table, Text, \
+    UniqueConstraint
 from sqlalchemy.dialects.mysql import TEXT, TINYINT, VARCHAR
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 import datetime
@@ -13,7 +14,8 @@ class UserRole(Base):
         ForeignKeyConstraint(['RoleId'], ['Role.Id'], name='UserRoleRole'),
         ForeignKeyConstraint(['UserId'], ['User.Id'], name='UserRoleUser'),
         Index('UserRoleRole', 'RoleId'),
-        Index('UserRoleUser', 'UserId')
+        Index('UserRoleUser', 'UserId'),
+        UniqueConstraint('UserId','RoleId',name="uq_user_role")
     )
 
     Id: Mapped[int] = mapped_column(Integer, primary_key=True, comment='编号')

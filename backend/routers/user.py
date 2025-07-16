@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from backend.core.database import get_db
 from backend.models.user import User
-from backend.services.user import create_user, get_user_by_username
+from backend.services.user import register_user_services,get_all_users_service
 from backend.schemas.user import UserCreateRequest, UserCreateResponse
 
 router = APIRouter(prefix="/user", tags=["user"])
@@ -10,24 +10,19 @@ router = APIRouter(prefix="/user", tags=["user"])
 
 @router.get("/")
 async def get_users(db: Session = Depends(get_db)):
-    users = db.query(User).all()
-    return users
+    return get_all_users_service(db)
 
 
 @router.post("/register", response_model=UserCreateResponse, status_code=201)
-async def register_user(
+async def register_user_endpoint(
         user_data: UserCreateRequest,
-        db: Session = Depends(get_db)
+        db: Session = Depends(get_db),
 ):
     try:
-        return create_user(db, user_data)
+        return register_user_services(db, user_data)
     except HTTPException as e:
-        # 捕获并重新抛出异常以保持统一响应格式
-        raise HTTPException(
-            status_code=e.status_code,
-            detail={
-                "success": False,
-                "userId": None,
-                "message": e.detail
-            }
+        return UserCreateResponse(
+            success=False,
+            user_id=None,
+            message=e.detail
         )

@@ -12,13 +12,18 @@ engine = create_engine(
 
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
 
+
 def init_db():
     Base.metadata.create_all(bind=engine)
+
 
 # FastAPI 依赖注入用
 def get_db() -> Session:
     db = SessionLocal()
     try:
         yield db
+    except:
+        db.rollback()
+        raise
     finally:
         db.close()
