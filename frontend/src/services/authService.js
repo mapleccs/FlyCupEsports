@@ -3,7 +3,7 @@ import axios from 'axios'
 
 
 // 更新 API 基础路径
-const API_URL = 'http://localhost:8000/api/auth'  // 确保与后端一致
+const API_URL = 'http://localhost:8000'  // 确保与后端一致
 
 // 登录方法
 export const loginUser = async (credentials) => {
