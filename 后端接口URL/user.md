@@ -1,11 +1,12 @@
 
 ## GET /api/v1/user
 ### 响应参数
-| 字段名        | 类型             | 描述  |
-|------------|----------------|-----|
-| id         | string         | 编号  |
-| user_name  | string         | 密码  |
-| photo_path | string \| null | 用户名 |
+| 字段名        | 类型                     | 描述   |
+|------------|------------------------|------|
+| id         | string                 | 编号   |
+| username   | string                 | 用户名  |
+| photo_path | string \| null         | 头像路径 |
+| roles      | list\[string\] \| null | 角色   |
 
 **示例**
 ```json
@@ -13,12 +14,40 @@
     {
         "id": 1,
         "username": "卷卷",
-        "photo_path": null
+        "photo_path": null,
+        "roles": []
     },
     {
-        "id": 2,
-        "username": "test",
-        "photo_path": "test"
+        "id": 8,
+        "username": "T5",
+        "photo_path": "",
+        "roles": [
+            "User"
+        ]
+    },
+    {
+        "id": 9,
+        "username": "T6",
+        "photo_path": null,
+        "roles": [
+            "User"
+        ]
+    },
+    {
+        "id": 10,
+        "username": "string",
+        "photo_path": null,
+        "roles": [
+            "User"
+        ]
+    },
+    {
+        "id": 11,
+        "username": "admin",
+        "photo_path": null,
+        "roles": [
+            "User"
+        ]
     }
 ]
 ```
@@ -30,7 +59,7 @@ photo_path 如果没有，结果为null。
 ### 请求参数
 | 字段名         | 类型     | 是否必填 | 描述         |
 |-------------|--------|------|------------|
-| username  | string | 是    | 用户名        |
+| username    | string | 是    | 用户名        |
 | password    | string | 是    | 密码         |
 | photo\_path | string | 否    | 用户头像路径（可选） |
 | role        | string | 否    | 角色名（可选）    |
@@ -46,7 +75,7 @@ photo_path 如果没有，结果为null。
 
 ### 响应参数
 | 字段名     | 类型              | 描述                 |
-| ------- | --------------- | ------------------ |
+|---------|-----------------|--------------------|
 | success | boolean         | 操作是否成功             |
 | userId  | integer \| null | 创建的用户ID，失败时可能为null |
 | message | string          | 提示信息               |
@@ -82,7 +111,7 @@ role 默认为User
 
 ### 响应参数
 | 字段名     | 类型              | 描述                 |
-| ------- | --------------- | ------------------ |
+|---------|-----------------|--------------------|
 | success | boolean         | 操作是否成功             |
 | userId  | integer \| null | 创建的用户ID，失败时可能为null |
 | message | string          | 提示信息               |

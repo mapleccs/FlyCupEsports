@@ -26,7 +26,7 @@ def user_login_service(db: Session, login_info: UserLoginRequest) -> UserLoginRe
 
 def get_all_users_service(db: Session) -> List[UserInfoResponse]:
     raw_users = get_all_user(db)
-    return [UserInfoResponse(id=u[0], username=u[1], photo_path=u[2]) for u in raw_users]
+    return raw_users
 
 
 def register_user_services(db: Session, user_data: UserCreateRequest) -> UserCreateResponse:

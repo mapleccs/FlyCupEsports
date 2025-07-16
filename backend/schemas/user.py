@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel, Field
 
@@ -16,8 +16,9 @@ class UserLoginResponse(BaseModel):
 
 class UserInfoResponse(BaseModel):
     id: int = Field(..., description="用户编号")
-    username: str = Field(..., description="用户编号")
-    photo_path: Optional[str] = Field(None, description="用户编号")
+    username: str = Field(..., description="用户名")
+    photo_path: Optional[str] = Field(None, description="头像路径")
+    roles: List[str] = Field(..., description="角色")
 
 
 class UserCreateRequest(BaseModel):

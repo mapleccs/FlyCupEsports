@@ -1,8 +1,9 @@
 from fastapi import HTTPException, status
 from sqlalchemy import Row
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from backend.models.user import User
-from backend.schemas.user import UserCreateRequest, UserCreateResponse, UserLoginRequest
+from backend.models.user_role import UserRole
+from backend.schemas.user import UserCreateRequest, UserCreateResponse, UserInfoResponse, UserLoginRequest
 
 
 def user_login(db: Session, login_info: UserLoginRequest) -> User | None:
@@ -13,9 +14,19 @@ def user_login(db: Session, login_info: UserLoginRequest) -> User | None:
     return user
 
 
-def get_all_user(db: Session) -> list[Row[tuple[int, str, str | None]]]:
-    users = db.query(User.Id, User.Username, User.UserPhoto).all()
-    return users
+def get_all_user(db: Session) -> list[UserInfoResponse]:
+    users = db.query(User).options(
+        joinedload(User.UserRole).joinedload(UserRole.Role_)
+    ).all()
+
+    return [
+        UserInfoResponse(
+            id=u.Id,
+            username=u.Username,
+            photo_path=u.UserPhoto,
+            roles=[r.Role_.Name for r in u.UserRole]
+        ) for u in users
+    ]
 
 
 def get_user_by_username(db: Session, username: str) -> User | None:
