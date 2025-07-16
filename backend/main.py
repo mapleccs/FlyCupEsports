@@ -1,5 +1,4 @@
-import sys
-import os
+
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from fastapi import FastAPI

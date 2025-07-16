@@ -1,53 +1,23 @@
 
 ## GET /api/v1/user
 ### 响应参数
-| 字段名        | 类型                     | 描述   |
-|------------|------------------------|------|
-| id         | string                 | 编号   |
-| username   | string                 | 用户名  |
-| photo_path | string \| null         | 头像路径 |
-| roles      | list\[string\] \| null | 角色   |
+| 字段名            | 类型             | 描述   |
+|----------------|----------------|------|
+| id             | string         | 编号   |
+| username       | string         | 用户名  |
+| photo_path     | string \| null | 头像路径 |
+| user_role_id   | integer        | 角色编号 |
+| user_role_name | string         | 角色名称 |
 
 **示例**
 ```json
 [
     {
         "id": 1,
-        "username": "卷卷",
-        "photo_path": null,
-        "roles": []
-    },
-    {
-        "id": 8,
-        "username": "T5",
-        "photo_path": "",
-        "roles": [
-            "User"
-        ]
-    },
-    {
-        "id": 9,
-        "username": "T6",
-        "photo_path": null,
-        "roles": [
-            "User"
-        ]
-    },
-    {
-        "id": 10,
-        "username": "string",
-        "photo_path": null,
-        "roles": [
-            "User"
-        ]
-    },
-    {
-        "id": 11,
         "username": "admin",
         "photo_path": null,
-        "roles": [
-            "User"
-        ]
+        "user_role_id": 2,
+        "user_role_name": "User"
     }
 ]
 ```
@@ -62,13 +32,20 @@ photo_path 如果没有，结果为null。
 | username    | string | 是    | 用户名        |
 | password    | string | 是    | 密码         |
 | photo\_path | string | 否    | 用户头像路径（可选） |
-| role        | string | 否    | 角色名（可选）    |
+| role        | string | 是    | 角色名        |
 **示例**
 ```json
 {
-    "username":"T5",
+    "username":"admin",
     "password":"123456",
     "photo_path":"",
+    "role":"User"
+}
+```
+```json
+{
+    "username":"admin",
+    "password":"123456",
     "role":"User"
 }
 ```
@@ -84,7 +61,7 @@ photo_path 如果没有，结果为null。
 ```json
 {
     "success": true,
-    "user_id": 4,
+    "user_id": 1,
     "message": "User created successfully."
 }
 ```
@@ -104,23 +81,27 @@ role 默认为User
 **示例**
 ```json
 {
-    "username":"T5",
+    "username":"admin",
     "password":"123456"
 }
 ```
 
 ### 响应参数
-| 字段名     | 类型              | 描述                 |
-|---------|-----------------|--------------------|
-| success | boolean         | 操作是否成功             |
-| userId  | integer \| null | 创建的用户ID，失败时可能为null |
-| message | string          | 提示信息               |
+| 字段名            | 类型              | 描述                 |
+|----------------|-----------------|--------------------|
+| success        | boolean         | 操作是否成功             |
+| userId         | integer \| null | 创建的用户ID，失败时可能为null |
+| user_role_id   | integer \| null | 角色编号，失败时可能为null    |
+| user_role_name | string \| null  | 角色命名，失败时可能为null    |
+| message        | string          | 提示信息               |
 
 **示例**
 ```json
 {
     "success": true,
-    "user_id": 8,
+    "user_id": 1,
+    "user_role_id": 2,
+    "user_role_name": "User",
     "message": "Login successfully."
 }
 ```

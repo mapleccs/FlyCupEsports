@@ -2,10 +2,8 @@ from backend.models.competitor import Competitor
 from backend.models.grade import Grade
 from backend.models.location import Location
 from backend.models.operation_log import OperationLog
-from backend.models.permission import Permission
 from backend.models.region import Region
 from backend.models.role import Role
-from backend.models.role_permission import t_RolePermission
 from backend.models.season import Season
 from backend.models.system_log import SystemLog
 from backend.models.team import Team
@@ -13,5 +11,3 @@ from backend.models.team_competitor import TeamCompetitor
 from backend.models.team_join_application import TeamJoinApplication
 from backend.models.team_role import TeamRole
 from backend.models.user import User
-from backend.models.user_permission import UserPermission
-from backend.models.user_role import UserRole
