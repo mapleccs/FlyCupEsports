@@ -2,8 +2,7 @@ from typing import List
 
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-from backend.models.user import User
-from backend.schemas.user import UserCreateRequest, UserCreateResponse, UserInfoResponse, UserLoginRequest, \
+from backend.schemas.v1.user import UserCreateRequest, UserCreateResponse, UserInfoResponse, UserLoginRequest, \
     UserLoginResponse
 from backend.crud.user import get_user_by_username, create_user, get_all_user, user_login
 from backend.crud.user_role import assign_role_to_user

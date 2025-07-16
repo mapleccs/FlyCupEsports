@@ -1,9 +1,7 @@
-from fastapi import HTTPException, status
-from sqlalchemy import Row
 from sqlalchemy.orm import Session, joinedload
 from backend.models.user import User
 from backend.models.user_role import UserRole
-from backend.schemas.user import UserCreateRequest, UserCreateResponse, UserInfoResponse, UserLoginRequest
+from backend.schemas.v1.user import UserCreateRequest, UserInfoResponse, UserLoginRequest
 
 
 def user_login(db: Session, login_info: UserLoginRequest) -> User | None:

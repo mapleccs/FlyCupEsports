@@ -1,10 +1,6 @@
-from fastapi import APIRouter
-from backend.routers import user
-from backend.routers import role
-# 其他模块你也可以继续加
+from backend.routers.v1 import router as v1_router
 
-router = APIRouter(prefix="/v1")
+# 提前准备 v2:
+# from backend.routers.v2 import router as v2_router
 
-# 聚合所有子模块的router
-router.include_router(user.router)
-router.include_router(role.router)
+__all__ = ["v1_router"]

@@ -1,9 +1,7 @@
 from typing import List
 
-from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-from backend.models.role import Role
-from backend.schemas.role import RoleInfoResponse
+from backend.schemas.v1.role import RoleInfoResponse
 from backend.crud.role import get_all_role
 
 

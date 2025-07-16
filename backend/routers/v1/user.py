@@ -1,11 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from starlette import status
 
 from backend.core.database import get_db
-from backend.models.user import User
-from backend.services.user import register_user_services, get_all_users_service, user_login_service
-from backend.schemas.user import UserCreateRequest, UserCreateResponse, UserLoginRequest, UserLoginResponse
+from backend.services.v1.user import register_user_services, get_all_users_service, user_login_service
+from backend.schemas.v1.user import UserCreateRequest, UserCreateResponse, UserLoginRequest, UserLoginResponse
 
 router = APIRouter(prefix="/user", tags=["user"])
 

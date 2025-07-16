@@ -1,8 +1,6 @@
-from fastapi import HTTPException, status
 from sqlalchemy import Row
 from sqlalchemy.orm import Session
 from backend.models.role import Role
-from backend.schemas.role import RoleInfoResponse
 
 
 def get_all_role(db: Session) -> list[Row[tuple[int, str, str | None]]]:
