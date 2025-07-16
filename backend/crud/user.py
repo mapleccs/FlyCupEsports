@@ -6,7 +6,10 @@ from backend.schemas.user import UserCreateRequest, UserCreateResponse, UserLogi
 
 
 def user_login(db: Session, login_info: UserLoginRequest) -> User | None:
-    user = db.query(User).filter(User.UserName == login_info.user_name and User.Password == login_info.password).first()
+    user = db.query(User).filter(
+        User.UserName == login_info.user_name,
+        User.Password == login_info.password
+    ).first()
     return user
 
 
