@@ -10,7 +10,7 @@
         <el-form-item prop="username">
           <el-input
             v-model="form.username"
-            placeholder="用户名或邮箱"
+            placeholder="用户名"
             prefix-icon="el-icon-user"
             size="large"
           />
@@ -80,18 +80,19 @@ const rules = {
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
 }
 
+// 添加角色重定向逻辑
 const handleLogin = async () => {
   try {
     loading.value = true
     await userStore.login(form.value)
 
-    // 根据用户角色重定向
-    if (userStore.user.role === 'admin') {
-      router.push('/admin')
-    } else if (userStore.user.role === 'captain') {
-      router.push('/teams')
+    // 根据角色重定向
+    if (userStore.isAdmin) {
+      await router.push('/admin')
+    } else if (userStore.isCaptain) {
+      await router.push('/teams/manage')
     } else {
-      router.push('/profile')
+      await router.push('/profile')
     }
 
     ElMessage.success('登录成功！')

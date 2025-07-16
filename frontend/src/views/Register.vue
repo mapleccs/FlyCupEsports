@@ -16,15 +16,6 @@
           />
         </el-form-item>
 
-        <el-form-item prop="email">
-          <el-input
-            v-model="form.email"
-            placeholder="电子邮箱"
-            prefix-icon="el-icon-message"
-            size="large"
-          />
-        </el-form-item>
-
         <el-form-item prop="password">
           <el-input
             v-model="form.password"
@@ -89,10 +80,9 @@ const userStore = useUserStore()
 
 const form = ref({
   username: '',
-  email: '',
   password: '',
   confirmPassword: '',
-  role: 'player'
+  role: 'user'
 })
 
 const agreement = ref(false)
@@ -110,10 +100,6 @@ const rules = {
   username: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
     { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
-  ],
-  email: [
-    { required: true, message: '请输入邮箱地址', trigger: 'blur' },
-    { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
   ],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },

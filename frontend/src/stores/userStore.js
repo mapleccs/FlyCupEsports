@@ -1,8 +1,16 @@
 // stores/userStore.js
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import {computed, ref} from 'vue'
 import { loginUser, registerUser, logoutUser, fetchUserProfile } from '@/services/authService'
 import { useRouter } from 'vue-router'
+
+// 添加角色常量
+const ROLES = {
+  USER: 'user',
+  PLAYER: 'player',
+  CAPTAIN: 'captain',
+  ADMIN: 'admin'
+}
 
 export const useUserStore = defineStore('user', () => {
   const user = ref(null)
@@ -10,22 +18,24 @@ export const useUserStore = defineStore('user', () => {
   const isAuthenticated = ref(!!token.value)
   const router = useRouter()
 
-// 在 init 方法中确保正确处理认证
-const init = async () => {
-  try {
-    const token = localStorage.getItem('authToken')
-    if (token) {
-      console.log('检测到本地 token, 尝试获取用户信息')
-      const userData = await fetchUserProfile()
-      user.value = userData
-      isAuthenticated.value = true
-      console.log('用户信息初始化成功:', userData)
+    // 添加计算属性
+  const userRole = computed(() => user.value?.role || ROLES.USER)
+  const isUser = computed(() => userRole.value === ROLES.USER)
+  const isPlayer = computed(() => userRole.value === ROLES.PLAYER)
+  const isCaptain = computed(() => userRole.value === ROLES.CAPTAIN)
+  const isAdmin = computed(() => userRole.value === ROLES.ADMIN)
+
+  // 更新初始化方法
+  const init = async () => {
+    if (token.value) {
+      try {
+        user.value = await fetchUserProfile()
+      } catch (error) {
+        console.error('初始化失败:', error)
+        logout()
+      }
     }
-  } catch (error) {
-    console.error('初始化用户信息失败:', error)
-    logout()
   }
-}
 
 // 在 login 方法中添加调试信息
 const login = async (credentials) => {
@@ -78,12 +88,6 @@ const register = async (userData) => {
     user.value = { ...user.value, ...newUserData }
   }
 
-  // 角色检查方法
-  const isUser = () => user.value?.role === 'user'
-  const isPlayer = () => user.value?.role === 'player'
-  const isCaptain = () => user.value?.role === 'captain'
-  const isAdmin = () => user.value?.role === 'admin'
-
   // 升级用户角色
   const upgradeToPlayer = () => {
     if (user.value) {
@@ -115,5 +119,7 @@ const register = async (userData) => {
     isPlayer,
     upgradeToPlayer,
     upgradeToCaptain,
+    userRole,
+    ROLES
   }
 })
