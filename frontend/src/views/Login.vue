@@ -49,11 +49,6 @@
     </div>
 
     <div class="auth-banner">
-      <img src="@/assets/images/auth-banner.png" alt="League of Legends" />
-      <div class="banner-overlay">
-        <h1>英雄联盟赛事平台</h1>
-        <p>一站式赛事管理与战队协作平台</p>
-      </div>
     </div>
   </div>
 </template>

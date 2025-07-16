@@ -60,11 +60,6 @@
     </div>
 
     <div class="auth-banner">
-      <img src="@/assets/images/register-banner.jpg" alt="League of Legends Teams" />
-      <div class="banner-overlay">
-        <h1>加入英雄联盟赛事平台</h1>
-        <p>管理你的战队，参加精彩赛事</p>
-      </div>
     </div>
   </div>
 </template>
@@ -206,7 +201,7 @@ const handleRegister = async () => {
 .auth-banner {
   flex: 1.5;
   position: relative;
-  background: url('@/assets/images/register-banner.jpg') no-repeat center center;
+  background: url('@/assets/images/home-bg.png') no-repeat center center;
   background-size: cover;
   display: flex;
   align-items: center;
