@@ -7,24 +7,24 @@ from backend.schemas.user import UserCreateRequest, UserCreateResponse, UserLogi
 
 def user_login(db: Session, login_info: UserLoginRequest) -> User | None:
     user = db.query(User).filter(
-        User.UserName == login_info.user_name,
+        User.Username == login_info.username,
         User.Password == login_info.password
     ).first()
     return user
 
 
 def get_all_user(db: Session) -> list[Row[tuple[int, str, str | None]]]:
-    users = db.query(User.Id, User.UserName, User.UserPhoto).all()
+    users = db.query(User.Id, User.Username, User.UserPhoto).all()
     return users
 
 
 def get_user_by_username(db: Session, username: str) -> User | None:
-    return db.query(User).filter(User.UserName == username).first()
+    return db.query(User).filter(User.Username == username).first()
 
 
 def create_user(db: Session, user: UserCreateRequest) -> User | None:
     db_user = User(
-        UserName=user.user_name,
+        Username=user.username,
         Password=user.password,
         UserPhoto=user.photo_path,
     )
