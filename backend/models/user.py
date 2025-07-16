@@ -18,7 +18,7 @@ class User(Base):
 
     Competitor: Mapped[List['Competitor']] = relationship('Competitor', back_populates='User_')
 
-    Region: Mapped[List['Region']] = relationship('Region', back_populates='User_')
+    Regions: Mapped[List['Region']] = relationship('Region', back_populates='User')
 
     UserPermission: Mapped[List['UserPermission']] = relationship('UserPermission', back_populates='User_')
     UserRole: Mapped[List['UserRole']] = relationship('UserRole', back_populates='User_')

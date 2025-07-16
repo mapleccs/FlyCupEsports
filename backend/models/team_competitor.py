@@ -25,6 +25,6 @@ class TeamCompetitor(Base):
     TeamRoleId: Mapped[int] = mapped_column(Integer, comment='队内角色')
     JoinDate: Mapped[datetime.datetime] = mapped_column(DateTime)
 
-    Team_: Mapped['Team'] = relationship('Team', back_populates='TeamCompetitor')
-    TeamRole_: Mapped['TeamRole'] = relationship('TeamRole', back_populates='TeamCompetitor')
+    Team: Mapped['Team'] = relationship('Team', back_populates='TeamCompetitor')
+    TeamRole: Mapped['TeamRole'] = relationship('TeamRole', back_populates='TeamCompetitor')
     Competitor: Mapped['Competitor'] = relationship('Competitor', back_populates='TeamCompetitors')

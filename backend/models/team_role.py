@@ -13,4 +13,4 @@ class TeamRole(Base):
     Id: Mapped[int] = mapped_column(Integer, primary_key=True)
     Name: Mapped[str] = mapped_column(String(255))
 
-    TeamUser: Mapped[List['TeamCompetitor']] = relationship('TeamCompetitor', back_populates='TeamRole_')
+    TeamCompetitor: Mapped[List['TeamCompetitor']] = relationship('TeamCompetitor', back_populates='TeamRole')
