@@ -46,3 +46,19 @@ export const fetchUserProfile = async () => {
     throw new Error('获取用户信息失败')
   }
 }
+
+export const logoutUser = async () => {
+  const token = localStorage.getItem('authToken')
+  if (!token) return
+  try {
+    await axios.post(
+      `${API_URL}/logout`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+  } catch (err) {
+    console.warn('注销请求失败，但仍清除本地登录状态', err)
+  } finally {
+    localStorage.removeItem('authToken')
+  }
+}

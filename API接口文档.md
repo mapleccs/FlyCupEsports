@@ -99,3 +99,25 @@ Response:
 }
 ```
 
+
+
+
+
+### 用户注册
+
+```json
+POST /auth/v1/register
+{
+    username: 'admin', 
+    password: '123456', 
+    role: 'user'
+}
+```
+
+
+
+用户登陆
+
+```json
+```
+

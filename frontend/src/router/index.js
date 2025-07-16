@@ -50,6 +50,15 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
 
+    // 如果用户未初始化但存在token，先初始化
+  if (localStorage.getItem('authToken') && !userStore.isAuthenticated) {
+    try {
+      await userStore.init()
+    } catch (error) {
+      console.error('路由守卫初始化用户失败:', error)
+    }
+  }
+
   // 根据角色设置页面访问权限
   const rolePermissions = {
     user: ['/', '/home', '/events', '/teams', '/recruitment', '/login', '/register'],

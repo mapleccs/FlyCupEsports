@@ -25,13 +25,13 @@ export const useUserStore = defineStore('user', () => {
   const isCaptain = computed(() => userRole.value === ROLES.CAPTAIN)
   const isAdmin = computed(() => userRole.value === ROLES.ADMIN)
 
-  // 更新初始化方法
+  // 添加初始化方法
   const init = async () => {
-    if (token.value) {
+    if (token.value && !user.value) {
       try {
         user.value = await fetchUserProfile()
       } catch (error) {
-        console.error('初始化失败:', error)
+        console.error('初始化用户信息失败:', error)
         logout()
       }
     }
@@ -113,6 +113,7 @@ const register = async (userData) => {
     register,
     logout,
     updateUser,
+    init,
     isUser,
     isAdmin,
     isCaptain,

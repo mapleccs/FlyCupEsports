@@ -99,20 +99,22 @@ import { useUserStore } from '@/stores/userStore'
 
 const router = useRouter()
 const userStore = useUserStore()
+const isInitialized = ref(false) // 添加初始化状态标志
 
 // 初始化用户状态
-onMounted(() => {
+onMounted(async () => {
   if (localStorage.getItem('authToken')) {
-    userStore.init()
+    await userStore.init() // 调用init方法
   }
+  isInitialized.value = true
 })
 
 // 导航菜单项
 const navItems = ref([
   { path: '/', title: '主页', icon: 'el-icon-house', roles: ['user', 'player', 'captain', 'admin'] },
-  { path: '/live', title: '直播', icon: 'el-icon-video-camera', roles: ['player', 'captain', 'admin'] },
+  { path: '/live', title: '直播', icon: 'el-icon-video-camera', roles: ['user', 'player', 'captain', 'admin'] },
   { path: '/schedule', title: '赛程', icon: 'el-icon-date', roles: ['player', 'captain', 'admin'] },
-  { path: '/teams', title: '战队', icon: 'el-icon-trophy', roles: ['player', 'captain', 'admin'] },
+  { path: '/teams', title: '战队', icon: 'el-icon-trophy', roles: ['user', 'player', 'captain', 'admin'] },
   { path: '/stats', title: '数据', icon: 'el-icon-data-analysis', roles: ['captain', 'admin'], roleRequired: '队长+' },
   { path: '/recruitment', title: '招募', icon: 'el-icon-user-solid', roles: ['player', 'captain', 'admin'] },
   { path: '/signup', title: '报名', icon: 'el-icon-edit', roles: ['user'], roleRequired: '普通用户' },
