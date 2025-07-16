@@ -8,6 +8,12 @@ class UserLoginRequest(BaseModel):
     password: str = Field(..., description="密码")
 
 
+class UserLoginResponse(BaseModel):
+    success: bool = Field(..., description="是否成功")
+    user_id: Optional[int] = Field(None, description="用户ID")
+    message: str = Field(..., description="提示信息")
+
+
 class UserInfoResponse(BaseModel):
     id: int = Field(..., description="用户编号")
     user_name: str = Field(..., description="用户编号")

@@ -3,10 +3,25 @@ from typing import List
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from backend.models.user import User
-from backend.schemas.user import UserCreateRequest, UserCreateResponse, UserInfoResponse
-from backend.crud.user import get_user_by_username, create_user, get_all_user
+from backend.schemas.user import UserCreateRequest, UserCreateResponse, UserInfoResponse, UserLoginRequest, \
+    UserLoginResponse
+from backend.crud.user import get_user_by_username, create_user, get_all_user, user_login
 from backend.crud.user_role import assign_role_to_user
 from backend.crud.role import get_role_by_name
+
+
+def user_login_service(db: Session, login_info: UserLoginRequest) -> UserLoginResponse | None:
+    user = user_login(db, login_info)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="The user name or password is incorrect.",
+        )
+    return UserLoginResponse(
+        success=True,
+        user_id=user.Id,
+        message="Login successfully.",
+    )
 
 
 def get_all_users_service(db: Session) -> List[UserInfoResponse]:

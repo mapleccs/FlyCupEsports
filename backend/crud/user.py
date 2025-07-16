@@ -2,7 +2,12 @@ from fastapi import HTTPException, status
 from sqlalchemy import Row
 from sqlalchemy.orm import Session
 from backend.models.user import User
-from backend.schemas.user import UserCreateRequest, UserCreateResponse
+from backend.schemas.user import UserCreateRequest, UserCreateResponse, UserLoginRequest
+
+
+def user_login(db: Session, login_info: UserLoginRequest) -> User | None:
+    user = db.query(User).filter(User.UserName == login_info.user_name and User.Password == login_info.password).first()
+    return user
 
 
 def get_all_user(db: Session) -> list[Row[tuple[int, str, str | None]]]:
