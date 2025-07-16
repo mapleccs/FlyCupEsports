@@ -16,4 +16,4 @@ class Season(Base):
     EndDate: Mapped[Optional[datetime.datetime]] = mapped_column(DateTime, comment='赛季结束日期')
     Description: Mapped[Optional[str]] = mapped_column(String(255))
 
-    Region: Mapped[List['Region']] = relationship('Region', back_populates='Season_')
+    Regions: Mapped[List['Region']] = relationship('Region', back_populates='Season')
