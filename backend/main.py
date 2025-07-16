@@ -7,6 +7,7 @@ from backend.core.database import init_db
 from backend.routers import router
 
 
+
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 
@@ -23,6 +24,7 @@ app.add_middleware(
 )
 
 app.include_router(router, prefix="/api")
+
 
 if __name__ == '__main__':
     uvicorn.run("main:app", reload=True)
