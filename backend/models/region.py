@@ -27,7 +27,7 @@ class Region(Base):
 
     Season: Mapped['Season'] = relationship('Season', back_populates='Regions')
     User: Mapped['User'] = relationship('User', back_populates='Regions')
-    Competitor:Mapped['Competitor']=relationship('Competitor', back_populates='Regions')
+    Player:Mapped['Player']=relationship('Player', back_populates='Regions')
 
 
 

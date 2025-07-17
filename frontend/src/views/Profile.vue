@@ -70,7 +70,7 @@ const user = ref({
   id: 1,
   username: '雷霆万钧',
   email: 'thunder@example.com',
-  role: 'player', // 可切换 'guest', 'player', 'captain', 'admin' 来测试不同视图
+  role: 'player', // 可切换 'guest', 'Player', 'captain', 'admin' 来测试不同视图
   avatar: null, // 可以是图片URL
   position: 'mid', // 玩家位置
   rank: '钻石Ⅲ', // 玩家段位

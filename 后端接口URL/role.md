@@ -22,7 +22,7 @@
     },
     {
         "id": 3,
-        "name": "Competitor",
+        "name": "Player",
         "remark": "选手"
     }
 ]

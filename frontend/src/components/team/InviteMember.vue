@@ -9,13 +9,13 @@
     <div v-if="isLoading" class="loading-state">正在搜索...</div>
     <div v-if="!isLoading && searchResults.length" class="results-list">
       <h4>搜索结果:</h4>
-      <div v-for="player in searchResults" :key="player.id" class="player-item">
+      <div v-for="Player in searchResults" :key="player.id" class="player-item">
         <div class="player-info">
-          <span class="player-name">{{ player.username }}</span>
-          <span class="player-gameId"> ({{ player.gameId }})</span>
+          <span class="player-name">{{ Player.username }}</span>
+          <span class="player-gameId"> ({{ Player.gameId }})</span>
         </div>
         <el-button type="primary" size="small" @click="sendInvite(player)" :disabled="player.isInvited">
-          {{ player.isInvited ? '已邀请' : '发送邀请' }}
+          {{ Player.isInvited ? '已邀请' : '发送邀请' }}
         </el-button>
       </div>
     </div>
@@ -45,7 +45,7 @@ const searchPlayer = () => {
     isLoading.value = false;
   }, 500);
 };
-const sendInvite = (player) => {
+const sendInvite = (Player) => {
   // 此处调用API发送邀请
   console.log(`Inviting player:`, player);
   player.isInvited = true;

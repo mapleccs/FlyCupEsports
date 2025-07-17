@@ -155,7 +155,7 @@ const handlePaymentConfirmed = async (paymentMethod) => {
   await new Promise(resolve => setTimeout(resolve, 1500));
 
   // 实际开发中，这里会是提交数据到后端的逻辑
-  // const formData = activeTab.value === 'player' ? playerFormData.value : teamFormData.value;
+  // const formData = activeTab.value === 'Player' ? playerFormData.value : teamFormData.value;
   // await signupService.submit(formData);
 
   submitting.value = false;

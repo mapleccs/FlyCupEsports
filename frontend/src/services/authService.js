@@ -23,7 +23,7 @@ export const loginUser = async (credentials) => {
     return {
       user: {
         id: user_id,
-        // 把 "Admin"/"User"/"Competitor"/"Captain" 转成小写，跟 Store 里 ROLES 对齐
+        // 把 "Admin"/"User"/"Player"/"Captain" 转成小写，跟 Store 里 ROLES 对齐
         role: user_role_name.toLowerCase()
       },
       token

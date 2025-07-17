@@ -23,4 +23,4 @@ class Team(Base):
 
     TeamJoinApplication: Mapped[List['TeamJoinApplication']] = relationship('TeamJoinApplication',
                                                                             back_populates='Team_')
-    TeamCompetitor: Mapped[List['TeamCompetitor']] = relationship('TeamCompetitor', back_populates='Team')
+    TeamPlayer: Mapped[List['TeamPlayer']] = relationship('TeamPlayer', back_populates='Team')

@@ -55,7 +55,7 @@ Response:
 ```json
 {
   "item_id": "项目ID",
-  "item_type": "player/team",
+  "item_type": "Player/team",
   "amount": 金额,
   "method": "支付方式"
 }
@@ -94,7 +94,7 @@ Response:
 
 ```JSON
 {
-  "player": 10,
+  "Player": 10,
   "team": 50
 }
 ```

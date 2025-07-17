@@ -3,7 +3,7 @@
     <RecruitmentFilter
       :positions="POSITIONS"
       :ranks="RANKS"
-      filter-type="player"
+      filter-type="Player"
       @filter-change="handleFilterChange"
     />
 
@@ -12,7 +12,7 @@
         v-for="post in filteredPlayerPosts"
         :key="post.id"
         :post="post"
-        type="player"
+        type="Player"
         @contact="contactPlayer(post)"
       />
     </div>

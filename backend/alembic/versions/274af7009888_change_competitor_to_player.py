@@ -1,8 +1,8 @@
-"""Init
+"""change competitor to player
 
-Revision ID: 59a224f8873b
-Revises: 
-Create Date: 2025-07-16 16:37:21.832756
+Revision ID: 274af7009888
+Revises: 59a224f8873b
+Create Date: 2025-07-17 10:12:35.974559
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import mysql
 
 # revision identifiers, used by Alembic.
-revision: str = '59a224f8873b'
-down_revision: Union[str, None] = None
+revision: str = '274af7009888'
+down_revision: Union[str, None] = '59a224f8873b'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -81,16 +81,6 @@ def upgrade() -> None:
     sa.Column('Name', sa.String(length=255), nullable=False),
     sa.PrimaryKeyConstraint('Id')
     )
-    op.create_table('User',
-    sa.Column('Id', sa.Integer(), nullable=False, comment='用户编号'),
-    sa.Column('Username', sa.String(length=20), nullable=False, comment='用户名称'),
-    sa.Column('Password', sa.String(length=20), nullable=False, comment='密码'),
-    sa.Column('RoleId', sa.Integer(), nullable=False, comment='用户角色'),
-    sa.Column('UserPhoto', sa.String(length=255), nullable=True, comment='用户头像路径'),
-    sa.ForeignKeyConstraint(['RoleId'], ['Role.Id'], name='User_ibfk_1'),
-    sa.PrimaryKeyConstraint('Id'),
-    sa.UniqueConstraint('Username')
-    )
     op.create_table('Region',
     sa.Column('Id', sa.Integer(), nullable=False),
     sa.Column('SeasonId', sa.Integer(), nullable=False, comment='所属赛季'),
@@ -122,12 +112,12 @@ def upgrade() -> None:
     sa.Column('RegisterTime', sa.DateTime(), nullable=False, comment='赛区报名时间'),
     sa.Column('IsApproved', mysql.TINYINT(display_width=1), nullable=False, comment='是否通过申请'),
     sa.Column('Reason', sa.Text(), nullable=True, comment='未通过申请原因'),
-    sa.ForeignKeyConstraint(['CurrentGradeId'], ['Rank.Id'], name='Competitor_ibfk_2'),
-    sa.ForeignKeyConstraint(['HighestGradeId'], ['Rank.Id'], name='Competitor_ibfk_3'),
-    sa.ForeignKeyConstraint(['PrimaryLocationId'], ['Position.Id'], name='Competitor_ibfk_4'),
-    sa.ForeignKeyConstraint(['RegionId'], ['Region.Id'], name='Competitor_ibfk_6'),
-    sa.ForeignKeyConstraint(['SecondaryLocationId'], ['Position.Id'], name='Competitor_ibfk_5'),
-    sa.ForeignKeyConstraint(['UserId'], ['User.Id'], name='Competitor_ibfk_1'),
+    sa.ForeignKeyConstraint(['CurrentGradeId'], ['Rank.Id'], name='Player_ibfk_2'),
+    sa.ForeignKeyConstraint(['HighestGradeId'], ['Rank.Id'], name='Player_ibfk_3'),
+    sa.ForeignKeyConstraint(['PrimaryLocationId'], ['Position.Id'], name='Player_ibfk_4'),
+    sa.ForeignKeyConstraint(['RegionId'], ['Region.Id'], name='Player_ibfk_6'),
+    sa.ForeignKeyConstraint(['SecondaryLocationId'], ['Position.Id'], name='Player_ibfk_5'),
+    sa.ForeignKeyConstraint(['UserId'], ['User.Id'], name='Player_ibfk_1'),
     sa.PrimaryKeyConstraint('Id')
     )
     op.create_index('CurrentGradeId', 'Player', ['CurrentGradeId'], unique=False)
@@ -136,55 +126,55 @@ def upgrade() -> None:
     op.create_index('RegionId', 'Player', ['RegionId'], unique=False)
     op.create_index('SecondaryLocationId', 'Player', ['SecondaryLocationId'], unique=False)
     op.create_index('UserId', 'Player', ['UserId'], unique=False)
-    op.create_table('TeamPlayer',
-    sa.Column('Id', sa.Integer(), nullable=False),
-    sa.Column('TeamId', sa.Integer(), nullable=False, comment='队伍'),
-    sa.Column('CompetitorId', sa.Integer(), nullable=False, comment='选手'),
-    sa.Column('TeamRoleId', sa.Integer(), nullable=False, comment='队内角色'),
-    sa.Column('JoinDate', sa.DateTime(), nullable=False),
-    sa.ForeignKeyConstraint(['CompetitorId'], ['Player.Id'], name='TeamUser_ibfk_2'),
-    sa.ForeignKeyConstraint(['TeamId'], ['Team.Id'], name='TeamUser_ibfk_1'),
-    sa.ForeignKeyConstraint(['TeamRoleId'], ['TeamRole.Id'], name='TeamUser_ibfk_3'),
-    sa.PrimaryKeyConstraint('Id')
-    )
-    op.create_index('CompetitorId', 'TeamPlayer', ['CompetitorId'], unique=False)
-    op.create_index('TeamId', 'TeamPlayer', ['TeamId'], unique=False)
-    op.create_index('TeamRoleId', 'TeamPlayer', ['TeamRoleId'], unique=False)
     op.create_table('TeamJoinApplication',
     sa.Column('Id', sa.Integer(), nullable=False),
     sa.Column('ApplyType', sa.String(length=255), nullable=False, comment='Join、Invite'),
-    sa.Column('FromCompetitorId', sa.Integer(), nullable=True, comment='发起人'),
-    sa.Column('ToCompetitorId', sa.Integer(), nullable=True, comment='目标人'),
+    sa.Column('FromPlayerId', sa.Integer(), nullable=True, comment='发起人'),
+    sa.Column('ToPlayerId', sa.Integer(), nullable=True, comment='目标人'),
     sa.Column('TeamId', sa.Integer(), nullable=True, comment='队伍'),
     sa.Column('Message', mysql.TEXT(), nullable=True, comment='申请信息'),
     sa.Column('Status', sa.String(length=255), nullable=True, comment='审批状态：Pending、Approved、Rejected、Cancelled'),
-    sa.Column('HandlerCompetitorId', sa.Integer(), nullable=True, comment='处理人'),
+    sa.Column('HandlerPlayerId', sa.Integer(), nullable=True, comment='处理人'),
     sa.Column('HandleTime', sa.DateTime(), nullable=True, comment='处理时间'),
     sa.Column('CreateTime', sa.DateTime(), nullable=True, comment='创建时间'),
-    sa.ForeignKeyConstraint(['FromCompetitorId'], ['Player.Id'], name='TeamJoinApplication_ibfk_1'),
-    sa.ForeignKeyConstraint(['HandlerCompetitorId'], ['Player.Id'], name='TeamJoinApplication_ibfk_4'),
+    sa.ForeignKeyConstraint(['FromPlayerId'], ['Player.Id'], name='TeamJoinApplication_ibfk_1'),
+    sa.ForeignKeyConstraint(['HandlerPlayerId'], ['Player.Id'], name='TeamJoinApplication_ibfk_4'),
     sa.ForeignKeyConstraint(['TeamId'], ['Team.Id'], name='TeamJoinApplication_ibfk_3'),
-    sa.ForeignKeyConstraint(['ToCompetitorId'], ['Player.Id'], name='TeamJoinApplication_ibfk_2'),
+    sa.ForeignKeyConstraint(['ToPlayerId'], ['Player.Id'], name='TeamJoinApplication_ibfk_2'),
     sa.PrimaryKeyConstraint('Id')
     )
-    op.create_index('FromCompetitorId', 'TeamJoinApplication', ['FromCompetitorId'], unique=False)
-    op.create_index('HandlerCompetitorId', 'TeamJoinApplication', ['HandlerCompetitorId'], unique=False)
+    op.create_index('FromPlayerId', 'TeamJoinApplication', ['FromPlayerId'], unique=False)
+    op.create_index('HandlerPlayerId', 'TeamJoinApplication', ['HandlerPlayerId'], unique=False)
     op.create_index('TeamId', 'TeamJoinApplication', ['TeamId'], unique=False)
-    op.create_index('ToCompetitorId', 'TeamJoinApplication', ['ToCompetitorId'], unique=False)
+    op.create_index('ToPlayerId', 'TeamJoinApplication', ['ToPlayerId'], unique=False)
+    op.create_table('TeamPlayer',
+    sa.Column('Id', sa.Integer(), nullable=False),
+    sa.Column('TeamId', sa.Integer(), nullable=False, comment='队伍'),
+    sa.Column('PlayerId', sa.Integer(), nullable=False, comment='选手'),
+    sa.Column('TeamRoleId', sa.Integer(), nullable=False, comment='队内角色'),
+    sa.Column('JoinDate', sa.DateTime(), nullable=False),
+    sa.ForeignKeyConstraint(['PlayerId'], ['Player.Id'], name='TeamPlayer_ibfk_2'),
+    sa.ForeignKeyConstraint(['TeamId'], ['Team.Id'], name='TeamPlayer_ibfk_1'),
+    sa.ForeignKeyConstraint(['TeamRoleId'], ['TeamRole.Id'], name='TeamPlayer_ibfk_3'),
+    sa.PrimaryKeyConstraint('Id')
+    )
+    op.create_index('PlayerId', 'TeamPlayer', ['PlayerId'], unique=False)
+    op.create_index('TeamId', 'TeamPlayer', ['TeamId'], unique=False)
+    op.create_index('TeamRoleId', 'TeamPlayer', ['TeamRoleId'], unique=False)
     # ### end Alembic commands ###
 
 
 def downgrade() -> None:
     # ### commands auto generated by Alembic - please adjust! ###
-    op.drop_index('ToCompetitorId', table_name='TeamJoinApplication')
-    op.drop_index('TeamId', table_name='TeamJoinApplication')
-    op.drop_index('HandlerCompetitorId', table_name='TeamJoinApplication')
-    op.drop_index('FromCompetitorId', table_name='TeamJoinApplication')
-    op.drop_table('TeamJoinApplication')
     op.drop_index('TeamRoleId', table_name='TeamPlayer')
     op.drop_index('TeamId', table_name='TeamPlayer')
-    op.drop_index('CompetitorId', table_name='TeamPlayer')
+    op.drop_index('PlayerId', table_name='TeamPlayer')
     op.drop_table('TeamPlayer')
+    op.drop_index('ToPlayerId', table_name='TeamJoinApplication')
+    op.drop_index('TeamId', table_name='TeamJoinApplication')
+    op.drop_index('HandlerPlayerId', table_name='TeamJoinApplication')
+    op.drop_index('FromPlayerId', table_name='TeamJoinApplication')
+    op.drop_table('TeamJoinApplication')
     op.drop_index('UserId', table_name='Player')
     op.drop_index('SecondaryLocationId', table_name='Player')
     op.drop_index('RegionId', table_name='Player')
@@ -195,7 +185,6 @@ def downgrade() -> None:
     op.drop_index('UserId', table_name='Region')
     op.drop_index('SeasonId', table_name='Region')
     op.drop_table('Region')
-    op.drop_table('User')
     op.drop_table('TeamRole')
     op.drop_table('Team')
     op.drop_table('SystemLog')

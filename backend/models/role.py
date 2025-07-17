@@ -3,6 +3,7 @@ from sqlalchemy import Integer, VARCHAR, TEXT
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from backend.models.base import Base
 
+
 class Role(Base):
     __tablename__ = 'Role'
 
@@ -11,5 +12,5 @@ class Role(Base):
     Remark: Mapped[Optional[str]] = mapped_column(TEXT, comment='角色备注')
 
     Users: Mapped[List['User']] = relationship('User',
-                                                                      foreign_keys='[User.RoleId]',
-                                                                      back_populates='Role')
+                                               foreign_keys='[User.RoleId]',
+                                               back_populates='Role')

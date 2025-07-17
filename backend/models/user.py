@@ -19,7 +19,7 @@ class User(Base):
     RoleId: Mapped[int] = mapped_column(Integer, comment="用户角色")
     UserPhoto: Mapped[Optional[str]] = mapped_column(String(255), comment='用户头像路径')
 
-    Competitor: Mapped[List['Competitor']] = relationship('Competitor', back_populates='User_')
+    Player: Mapped[List['Player']] = relationship('Player', back_populates='User_')
 
     Regions: Mapped[List['Region']] = relationship('Region', back_populates='User')
 
