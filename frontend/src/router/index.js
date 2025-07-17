@@ -6,6 +6,8 @@ import Recruitment from "@/views/Recruitment.vue";
 import Profile  from "@/views/Profile.vue";
 import Login from "@/views/Login.vue";
 import Register from "@/views/Register.vue";
+import Live from "@/views/Live.vue";
+import Schedule from "@/views/Schedule.vue";
 import { useUserStore } from "@/stores/userStore";
 
 
@@ -21,6 +23,8 @@ const routes = [
         { path: '/signup', name: 'Signup', component: Signup },
         { path: '/recruitment', name: 'Recruitment', component: Recruitment },
         { path: '/profile', name: 'Profile', component: Profile },
+        { path: '/live', name: 'Live', component: Live },
+        { path: '/schedule', name: 'Schedule', component: Schedule }
         // 其他页面路由
     ]
   },

@@ -180,6 +180,8 @@ onMounted(async () => {
   max-width: 1400px;
   margin: 0 auto;
   padding: 20px;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  min-height: 100vh;
 }
 
 .schedule-header {
@@ -253,7 +255,7 @@ onMounted(async () => {
   margin-bottom: 15px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .schedule-header h1 {
     font-size: 2rem;
   }
