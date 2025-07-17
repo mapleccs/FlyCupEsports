@@ -62,7 +62,7 @@ const user = ref({
   id: 1,
   username: '万钧',
   role: 'captain', // 可切换 'guest', 'Player', 'captain', 'admin' 来测试不同视图
-  avatar: null, // 可以是图片URL
+  avatar: 'https://zhihuiss2024.oss-cn-nanjing.aliyuncs.com/img/202507172213289.png', // 可以是图片URL
   position: 'MIDDLE', // 玩家位置
   rank: '钻石Ⅲ', // 玩家段位
 });
@@ -70,7 +70,7 @@ const user = ref({
 const userStats = ref({
   gamesPlayed: 42,
   winRate: '68%',
-  teamCount: 1,
+  teamCount: 'IG战队',
   // 详细统计数据，用于雷达图
   "伤害占比": 32,
   "每死承伤": 1800,
@@ -88,7 +88,7 @@ const userStats = ref({
 
 const userTeam = ref({
   id: 101,
-  name: '雷霆战队',
+  name: 'IG战队',
   logo: null,
   slogan: '我们的目标是星辰大海！',
   members: [
@@ -112,7 +112,7 @@ const userEvents = ref([
 ]);
 
 const userSettings = ref({
-  username: '雷霆万钧',
+  username: '万钧',
   gameId: 'ThunderKing',
   mainPosition: 'mid',
 });

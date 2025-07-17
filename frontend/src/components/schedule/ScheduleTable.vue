@@ -33,7 +33,7 @@
 
       <el-table-column prop="tournament.name" label="赛事" width="180" />
 
-      <el-table-column label="状态" width="120">
+      <el-table-column label="状态" width="120" align="center">
         <template #default="{ row }">
           <el-tag
             :type="statusTagType(row.status)"
@@ -45,13 +45,14 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" width="150">
+      <el-table-column label="操作" width="150" align="center">
         <template #default="{ row }">
           <el-button
             v-if="row.status === 'live'"
             type="danger"
             size="small"
             @click.stop="watchLive(row)"
+            class="action-btn live-btn"
           >
             <i class="el-icon-video-play"></i> 直播
           </el-button>
@@ -61,6 +62,7 @@
             type="info"
             size="small"
             @click.stop="watchReplay(row)"
+            class="action-btn replay-btn"
           >
             <i class="el-icon-video-pause"></i> 回放
           </el-button>
@@ -123,29 +125,34 @@ const watchReplay = (match) => {
 
 <style scoped>
 .schedule-table {
-  background: rgba(15, 23, 42, 0.7);
-  border-radius: 12px;
-  padding: 20px;
+  background: rgba(15, 23, 42, 0.8);
+  border-radius: 16px;
+  padding: 24px;
   margin-bottom: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
 .match-date {
   display: flex;
   flex-direction: column;
+  text-align: center;
 }
 
 .date {
   font-weight: bold;
+  font-size: 1rem;
 }
 
 .time {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: #94a3b8;
 }
 
 .match-teams {
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .team {
@@ -156,59 +163,111 @@ const watchReplay = (match) => {
 }
 
 .team-logo {
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   object-fit: contain;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+  transition: transform 0.3s ease;
+}
+
+.team:hover .team-logo {
+    transform: scale(1.1);
+}
+
+.team span {
+    font-weight: 600;
 }
 
 .vs {
-  margin: 0 15px;
-  color: #94a3b8;
+  margin: 0 20px;
+  color: #64748b;
   font-weight: bold;
+  font-size: 1.2rem;
 }
 
 .status-tag {
   font-weight: bold;
+  border: none;
 }
 
-/* 表格行样式 */
+/* Action Buttons */
+.action-btn {
+    border: none;
+    font-weight: bold;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.live-btn {
+    background: linear-gradient(45deg, #ef4444, #f87171);
+}
+
+.replay-btn {
+    background: linear-gradient(45deg, #64748b, #94a3b8);
+}
+
+
+/* Table Styles */
 :deep(.el-table) {
-  --el-table-header-bg-color: rgba(30, 41, 59, 0.8);
-  --el-table-tr-bg-color: rgba(15, 23, 42, 0.5);
-  --el-table-row-hover-bg-color: rgba(56, 70, 100, 0.7);
-  --el-table-border-color: rgba(255, 255, 255, 0.05);
-  color: #e2e8f0;
+  --el-table-bg-color: transparent;
+  --el-table-header-bg-color: rgba(30, 41, 59, 0.7);
+  --el-table-tr-bg-color: rgba(30, 41, 59, 0.5);
+  --el-table-row-hover-bg-color: rgba(56, 70, 100, 0.8);
+  --el-table-border-color: rgba(255, 255, 255, 0.15);
+  color: #f1f5f9;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 :deep(.el-table th) {
-  color: #cbd5e1;
+  color: #e2e8f0;
   font-weight: bold;
+  font-size: 0.95rem;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+  /* This is the key change for centering header text */
+  text-align: center;
 }
 
 :deep(.el-table tr) {
   background-color: var(--el-table-tr-bg-color);
+  transition: background-color 0.3s ease;
 }
 
-:deep(.el-table__body tr:hover>td) {
+:deep(.el-table__body tr:hover > td) {
   background-color: var(--el-table-row-hover-bg-color) !important;
 }
 
 :deep(.live-row) {
-  --el-table-tr-bg-color: rgba(255, 70, 85, 0.1);
+  --el-table-tr-bg-color: rgba(239, 68, 68, 0.15);
+  border-left: 4px solid #ef4444;
 }
 
-:deep(.live-row:hover) {
-  background-color: rgba(255, 70, 85, 0.2) !important;
+:deep(.live-row:hover > td) {
+  background-color: rgba(239, 68, 68, 0.25) !important;
 }
 
+/* Responsive adjustments */
 @media (max-width: 768px) {
-  .vs {
-    margin: 0 5px;
+  .schedule-table {
+    padding: 16px;
   }
-
+  .vs {
+    margin: 0 10px;
+    font-size: 1rem;
+  }
+  .team-logo {
+      width: 40px;
+      height: 40px;
+  }
   .team span {
     font-size: 0.8rem;
+  }
+  :deep(.el-table th) {
+    font-size: 0.85rem;
   }
 }
 </style>

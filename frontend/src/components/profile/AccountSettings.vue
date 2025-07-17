@@ -5,12 +5,6 @@
       <el-form-item label="用户名">
         <el-input v-model="form.username" disabled></el-input>
       </el-form-item>
-      <el-form-item label="电子邮箱">
-        <el-input v-model="form.email"></el-input>
-      </el-form-item>
-      <el-form-item label="手机号码">
-        <el-input v-model="form.phone"></el-input>
-      </el-form-item>
       <el-form-item label="游戏ID">
         <el-input v-model="form.gameId"></el-input>
       </el-form-item>

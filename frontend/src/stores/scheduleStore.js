@@ -17,21 +17,21 @@ export const useScheduleStore = defineStore('schedule', {
 
         // 模拟数据
         this.teams = [
-          { id: 1, name: 'EDG电子竞技俱乐部', abbr: 'EDG', logo: '/logos/edg.png', region: 'LPL' },
-          { id: 2, name: 'RNG电子竞技俱乐部', abbr: 'RNG', logo: '/logos/rng.png', region: 'LPL' },
-          { id: 3, name: 'IG电子竞技俱乐部', abbr: 'IG', logo: '/logos/ig.png', region: 'LPL' },
-          { id: 4, name: 'FPX电子竞技俱乐部', abbr: 'FPX', logo: '/logos/fpx.png', region: 'LPL' },
-          { id: 5, name: 'TES电子竞技俱乐部', abbr: 'TES', logo: '/logos/tes.png', region: 'LPL' },
-          { id: 6, name: 'JDG京东电子竞技俱乐部', abbr: 'JDG', logo: '/logos/jdg.png', region: 'LPL' },
-          { id: 7, name: 'LNG电子竞技俱乐部', abbr: 'LNG', logo: '/logos/lng.png', region: 'LPL' },
-          { id: 8, name: 'WE电子竞技俱乐部', abbr: 'WE', logo: '/logos/we.png', region: 'LPL' },
-          { id: 9, name: 'T1', abbr: 'T1', logo: '/logos/t1.png', region: 'LCK' },
-          { id: 10, name: 'Gen.G', abbr: 'GEN', logo: '/logos/geng.png', region: 'LCK' },
-          { id: 11, name: 'DK', abbr: 'DK', logo: '/logos/dk.png', region: 'LCK' },
-          { id: 12, name: 'G2 Esports', abbr: 'G2', logo: '/logos/g2.png', region: 'LEC' },
-          { id: 13, name: 'Fnatic', abbr: 'FNC', logo: '/logos/fnc.png', region: 'LEC' },
-          { id: 14, name: 'Cloud9', abbr: 'C9', logo: '/logos/c9.png', region: 'LCS' },
-          { id: 15, name: 'Team Liquid', abbr: 'TL', logo: '/logos/tl.png', region: 'LCS' }
+          { id: 1, name: 'EDG电子竞技俱乐部', abbr: 'EDG', logo: 'https://zhihuiss2024.oss-cn-nanjing.aliyuncs.com/img/202507172213289.png', region: 'LPL' },
+          { id: 2, name: 'RNG电子竞技俱乐部', abbr: 'RNG', logo: 'https://zhihuiss2024.oss-cn-nanjing.aliyuncs.com/img/202507172213289.png', region: 'LPL' },
+          { id: 3, name: 'IG电子竞技俱乐部', abbr: 'IG', logo: 'https://zhihuiss2024.oss-cn-nanjing.aliyuncs.com/img/202507172213289.png', region: 'LPL' },
+          { id: 4, name: 'FPX电子竞技俱乐部', abbr: 'FPX', logo: 'https://zhihuiss2024.oss-cn-nanjing.aliyuncs.com/img/202507172213289.png', region: 'LPL' },
+          { id: 5, name: 'TES电子竞技俱乐部', abbr: 'TES', logo: 'https://zhihuiss2024.oss-cn-nanjing.aliyuncs.com/img/202507172213289.png', region: 'LPL' },
+          { id: 6, name: 'JDG京东电子竞技俱乐部', abbr: 'JDG', logo: 'https://zhihuiss2024.oss-cn-nanjing.aliyuncs.com/img/202507172213289.png', region: 'LPL' },
+          { id: 7, name: 'LNG电子竞技俱乐部', abbr: 'LNG', logo: 'https://zhihuiss2024.oss-cn-nanjing.aliyuncs.com/img/202507172213289.png', region: 'LPL' },
+          { id: 8, name: 'WE电子竞技俱乐部', abbr: 'WE', logo: 'https://zhihuiss2024.oss-cn-nanjing.aliyuncs.com/img/202507172213289.png', region: 'LPL' },
+          { id: 9, name: 'T1', abbr: 'T1', logo: 'https://zhihuiss2024.oss-cn-nanjing.aliyuncs.com/img/202507172213289.png', region: 'LCK' },
+          { id: 10, name: 'Gen.G', abbr: 'GEN', logo: 'https://zhihuiss2024.oss-cn-nanjing.aliyuncs.com/img/202507172213289.png', region: 'LCK' },
+          { id: 11, name: 'DK', abbr: 'DK', logo: 'https://zhihuiss2024.oss-cn-nanjing.aliyuncs.com/img/202507172213289.png', region: 'LCK' },
+          { id: 12, name: 'G2 Esports', abbr: 'G2', logo: 'https://zhihuiss2024.oss-cn-nanjing.aliyuncs.com/img/202507172213289.png', region: 'LEC' },
+          { id: 13, name: 'Fnatic', abbr: 'FNC', logo: 'https://zhihuiss2024.oss-cn-nanjing.aliyuncs.com/img/202507172213289.png', region: 'LEC' },
+          { id: 14, name: 'Cloud9', abbr: 'C9', logo: 'https://zhihuiss2024.oss-cn-nanjing.aliyuncs.com/img/202507172213289.png', region: 'LCS' },
+          { id: 15, name: 'Team Liquid', abbr: 'TL', logo: 'https://zhihuiss2024.oss-cn-nanjing.aliyuncs.com/img/202507172213289.png', region: 'LCS' }
         ]
 
         this.tournaments = [
@@ -46,7 +46,7 @@ export const useScheduleStore = defineStore('schedule', {
           // 已结束的比赛
           {
             id: 1,
-            date: '2023-07-20',
+            date: '2025-07-20',
             time: '17:00',
             tournament: this.tournaments[1],
             stage: '常规赛',
@@ -70,7 +70,7 @@ export const useScheduleStore = defineStore('schedule', {
           },
           {
             id: 2,
-            date: '2023-07-20',
+            date: '2025-07-20',
             time: '19:00',
             tournament: this.tournaments[1],
             stage: '常规赛',
@@ -95,7 +95,7 @@ export const useScheduleStore = defineStore('schedule', {
           // 未开始的比赛
           {
             id: 3,
-            date: '2023-07-21',
+            date: '2025-07-21',
             time: '17:00',
             tournament: this.tournaments[1],
             stage: '常规赛',
@@ -105,7 +105,7 @@ export const useScheduleStore = defineStore('schedule', {
           },
           {
             id: 4,
-            date: '2023-07-21',
+            date: '2025-07-21',
             time: '19:00',
             tournament: this.tournaments[1],
             stage: '常规赛',
@@ -116,7 +116,7 @@ export const useScheduleStore = defineStore('schedule', {
           // 直播中的比赛
           {
             id: 5,
-            date: '2023-07-22',
+            date: '2025-07-22',
             time: '17:00',
             tournament: this.tournaments[1],
             stage: '常规赛',
@@ -127,7 +127,7 @@ export const useScheduleStore = defineStore('schedule', {
           },
           {
             id: 6,
-            date: '2023-07-22',
+            date: '2025-07-22',
             time: '19:00',
             tournament: this.tournaments[1],
             stage: '常规赛',
@@ -138,7 +138,7 @@ export const useScheduleStore = defineStore('schedule', {
           // 其他赛事
           {
             id: 7,
-            date: '2023-07-23',
+            date: '2025-07-23',
             time: '15:00',
             tournament: this.tournaments[3],
             stage: '小组赛',
@@ -148,7 +148,7 @@ export const useScheduleStore = defineStore('schedule', {
           },
           {
             id: 8,
-            date: '2023-07-23',
+            date: '2025-07-23',
             time: '17:00',
             tournament: this.tournaments[3],
             stage: '小组赛',
@@ -158,7 +158,7 @@ export const useScheduleStore = defineStore('schedule', {
           },
           {
             id: 9,
-            date: '2023-07-23',
+            date: '2025-07-23',
             time: '19:00',
             tournament: this.tournaments[3],
             stage: '小组赛',
@@ -168,7 +168,7 @@ export const useScheduleStore = defineStore('schedule', {
           },
           {
             id: 10,
-            date: '2023-07-24',
+            date: '2025-07-24',
             time: '17:00',
             tournament: this.tournaments[1],
             stage: '常规赛',
@@ -178,7 +178,7 @@ export const useScheduleStore = defineStore('schedule', {
           },
           {
             id: 11,
-            date: '2023-07-24',
+            date: '2025-07-24',
             time: '19:00',
             tournament: this.tournaments[1],
             stage: '常规赛',
@@ -188,7 +188,7 @@ export const useScheduleStore = defineStore('schedule', {
           },
           {
             id: 12,
-            date: '2023-07-25',
+            date: '2025-07-25',
             time: '17:00',
             tournament: this.tournaments[1],
             stage: '常规赛',
@@ -198,7 +198,7 @@ export const useScheduleStore = defineStore('schedule', {
           },
           {
             id: 13,
-            date: '2023-07-25',
+            date: '2025-07-25',
             time: '19:00',
             tournament: this.tournaments[1],
             stage: '常规赛',
