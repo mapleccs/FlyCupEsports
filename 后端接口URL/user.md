@@ -16,8 +16,8 @@
         "id": 1,
         "username": "admin",
         "photo_path": null,
-        "user_role_id": 2,
-        "user_role_name": "User"
+        "user_role_id": 1,
+        "user_role_name": "admin"
     }
 ]
 ```
@@ -39,14 +39,14 @@ photo_path 如果没有，结果为null。
     "username":"admin",
     "password":"123456",
     "photo_path":"",
-    "role":"User"
+    "role":"user"
 }
 ```
 ```json
 {
     "username":"admin",
     "password":"123456",
-    "role":"User"
+    "role":"user"
 }
 ```
 

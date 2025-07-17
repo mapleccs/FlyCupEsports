@@ -29,6 +29,9 @@ class Region(Base):
     User: Mapped['User'] = relationship('User', back_populates='Regions')
     Player:Mapped['Player']=relationship('Player', back_populates='Regions')
 
+    Teams: Mapped[List['Team']] = relationship('Team', back_populates='Region')
+
+
 
 
 
