@@ -61,13 +61,14 @@ import RegionSelection from '@/components/signup/RegionSelection.vue';
 import PlayerSignupForm from '@/components/signup/PlayerSignupForm.vue';
 import TeamSignupForm from '@/components/signup/TeamSignupForm.vue';
 import PaymentDialog from '@/components/signup/PaymentDialog.vue';
-import { registerPlayer, createTeam } from '@/services/signupService';
+import { createPlayerSignup, createTeamSignup, createWechatPayment, checkPaymentStatus } from '@/services/signupService';
 
 // --- 状态管理 ---
 
 const activeTab = ref('player'); // 当前激活的标签页
 const submitting = ref(false); // 是否正在提交
 const selectedRegion = ref('fly'); // 默认选中赛区
+const currentOrderId = ref(null)
 
 // 报名费用
 const fees = {
@@ -98,7 +99,7 @@ const playerRules = {
   personal_name: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
   gameId: [{ required: true, message: '请输入游戏ID', trigger: 'blur' }],
   main_position: [{ required: true, message: '请选择主玩位置', trigger: 'change' }],
-  contact: [{ required: true, message: '请输入联系方式', trigger: 'blur' }],
+  QQ: [{ required: true, message: '请输入QQ号', trigger: 'blur' }],
   agreement: [{ required: true, message: '请同意协议', trigger: 'change', validator: (rule, value) => value }],
 };
 
@@ -112,15 +113,6 @@ const teamRules = {
   agreement: [{ required: true, message: '请同意协议', trigger: 'change', validator: (rule, value) => value }],
 };
 
-// 模拟支付方式
-const paymentMethods = ref([
-    { id: 'alipay', name: '支付宝', icon: 'el-icon-s-finance' },
-    { id: 'wechat', name: '微信支付', icon: 'el-icon-s-goods' },
-]);
-
-
-// --- 方法 ---
-
 // 处理赛区选择
 const handleRegionSelect = (regionId) => {
   selectedRegion.value = regionId;
@@ -133,17 +125,40 @@ const handleLogoUpload = (url) => {
 };
 
 // 触发表单提交，打开支付对话框
-const handleSubmit = () => {
-  if (activeTab.value === 'player') {
-    paymentDialog.title = '选手报名支付';
-    paymentDialog.item = `选手报名 - ${playerFormData.value.personal_name}`;
-    paymentDialog.amount = fees.player;
-  } else {
-    paymentDialog.title = '战队创建支付';
-    paymentDialog.item = `创建战队 - ${teamFormData.value.name}`;
-    paymentDialog.amount = fees.team;
+const handleSubmit = async () => {
+  submitting.value = true
+
+  try {
+    const type = activeTab.value
+    const formData = type === 'player' ? playerFormData.value : teamFormData.value
+
+    // 创建报名记录
+    const response = type === 'player'
+    ? await createPlayerSignup({
+          ...formData,
+          regions: selectedRegion.value
+        })
+        : await createTeamSignup({
+          ...formData,
+          regions: selectedRegion.value
+        })
+
+    const signupId = response.data.id
+    currentOrderId.value = signupId
+
+    // 准备支付参数
+    paymentDialog.title = type === 'player' ? '选手报名支付' : '战队创建支付'
+    paymentDialog.item = type === 'player'
+    ? `选手报名 - ${playerFormData.value.personal_name}`
+    : `创建战队 - ${teamFormData.value.name}`
+
+    paymentDialog.amount = fees[type]
+    paymentDialog.visible = true
+  } catch (error) {
+    ElMessage.error (`报名创建失败：${error.response?.data?.message || error.message}`)
+  } finally {
+    submitting.value = false
   }
-  paymentDialog.visible = true;
 };
 
 // 处理支付确认

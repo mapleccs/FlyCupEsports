@@ -1,6 +1,5 @@
 from typing import List
 
-import loguru
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from backend.schemas.v1.user import UserCreateRequest, UserCreateResponse, UserInfoResponse, UserLoginRequest, \

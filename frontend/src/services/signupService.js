@@ -1,22 +1,27 @@
-import axios from 'axios' // 使用统一的axios实例
 import { useUserStore } from '@/stores/userStore'
+import axios from "axios";
 
 
 
-const API_URL = "/api"
+const API_URL = "/api/v1/signup"
 // 选手报名
-export function registerPlayer(playerData) {
-  return axios.post('/api/players', playerData)
+export function createPlayerSignup(playerData) {
+  return axios.post(`${API_URL}/player`, playerData)
 }
 
 // 创建战队
-export function createTeam(teamData) {
-  return axios.post('/api/teams', teamData)
+export function createTeamSignup(teamData) {
+  return axios.post(`${API_URL}/teams`, teamData)
 }
 
-// 发起支付
-export function createPayment(paymentData) {
-  return axios.post('/api/payments', paymentData)
+// 发起微信支付
+export function createWechatPayment(orderData) {
+  return axios.post(`${API_URL}/payments/wechat`, orderData)
+}
+
+// 检查支付状态
+export function checkPaymentStatus(orderId) {
+  return axios.get(`${API_URL}/payments/status/${orderId}`)
 }
 
 // 上传Logo
@@ -29,22 +34,4 @@ export function uploadLogo(file) {
       'Content-Type': 'multipart/form-data'
     }
   })
-}
-
-export const submitSignup = async (formData, type) => {
-  try {
-    const response = await axios.post('/api/signup', { ...formData, type })
-    const userStore = useUserStore()
-
-    // 根据报名类型升级用户角色
-    if (type === 'player') {
-      userStore.upgradeToPlayer()
-    } else if (type === 'team') {
-      userStore.upgradeToCaptain()
-    }
-
-    return response.data
-  } catch (error) {
-    throw new Error(error.response?.data?.message || '报名失败')
-  }
 }
