@@ -58,6 +58,8 @@ class Player(Base):
 
     TeamPlayers: Mapped[List['TeamPlayer']] = relationship('TeamPlayer', back_populates='Player')
 
+    CreatedTeams: Mapped[List['Team']] = relationship('Team', back_populates='CreatePlayer')
+
     TeamJoinApplicationFromPlayer: Mapped[List['TeamJoinApplication']] = relationship('TeamJoinApplication',
                                                                             foreign_keys='[TeamJoinApplication.FromPlayerId]',
                                                                             back_populates='FromPlayer')
