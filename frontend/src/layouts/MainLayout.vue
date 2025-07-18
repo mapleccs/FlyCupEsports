@@ -118,6 +118,7 @@ const navItems = ref([
   { path: '/stats', title: '数据', icon: 'el-icon-data-analysis', roles: ['captain', 'admin']},
   { path: '/recruitment', title: '招募', icon: 'el-icon-user-solid', roles: ['player', 'captain', 'admin'] },
   { path: '/signup', title: '报名', icon: 'el-icon-edit', roles: ['user'] },
+  { path: '/match', title: '比赛', icon: 'el-icon-edit', roles: ['user', 'player', 'captain', 'admin'] },
   { path: '/partners', title: '合作', icon: 'el-icon-handshake', roles: ['admin'] },
   { path: '/admin', title: '管理', icon: 'el-icon-s-tools', roles: ['admin'] }
 ])

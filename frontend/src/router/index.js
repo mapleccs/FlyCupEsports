@@ -8,6 +8,7 @@ import Login from "@/views/Login.vue";
 import Register from "@/views/Register.vue";
 import Live from "@/views/Live.vue";
 import Schedule from "@/views/Schedule.vue";
+import MatchControl from "@/views/MatchControl.vue";
 import { useUserStore } from "@/stores/userStore";
 
 
@@ -24,7 +25,8 @@ const routes = [
         { path: '/recruitment', name: 'Recruitment', component: Recruitment },
         { path: '/profile', name: 'Profile', component: Profile },
         { path: '/live', name: 'Live', component: Live },
-        { path: '/schedule', name: 'Schedule', component: Schedule }
+        { path: '/schedule', name: 'Schedule', component: Schedule },
+        { path: '/match', name: 'MatchControl', component: MatchControl }
         // 其他页面路由
     ]
   },
