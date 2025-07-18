@@ -1,6 +1,7 @@
 from typing import List, Optional
 
-from sqlalchemy import Column, DECIMAL, DateTime, ForeignKeyConstraint, Index, Integer, String, Table, Text
+from sqlalchemy import Column, DECIMAL, DateTime, ForeignKeyConstraint, Index, Integer, String, Table, Text, \
+    UniqueConstraint
 from sqlalchemy.dialects.mysql import TEXT, TINYINT, VARCHAR
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 import datetime
@@ -11,6 +12,8 @@ from backend.models.base import Base
 class Player(Base):
     __tablename__ = 'Player'
     __table_args__ = (
+        UniqueConstraint("UserId", "RegionId", name="player_user_id_region_id"),
+        UniqueConstraint("GameNameWithNumber", "RegionId", name="player_user_id_game_name_with_number"),
         ForeignKeyConstraint(['CurrentRankId'], ['Rank.Id'], name='Player_ibfk_2'),
         ForeignKeyConstraint(['HighestRankId'], ['Rank.Id'], name='Player_ibfk_3'),
         ForeignKeyConstraint(['PrimaryPositionId'], ['Position.Id'], name='Player_ibfk_4'),
@@ -38,15 +41,16 @@ class Player(Base):
 
     RegionId: Mapped[int] = mapped_column(Integer, comment="报名赛区")
     RegisterCost: Mapped[decimal.Decimal] = mapped_column(DECIMAL(10, 2), comment='报名押金')
+    PaymentMethod: Mapped[str] = mapped_column(VARCHAR(20), comment='支付方式')
     RegisterTime: Mapped[datetime.datetime] = mapped_column(DateTime, comment='赛区报名时间')
 
     IsApproved: Mapped[int] = mapped_column(TINYINT(1), comment='是否通过申请')
     Reason: Mapped[Optional[str]] = mapped_column(Text, comment='未通过申请原因')
 
     CurrentRank: Mapped['Rank'] = relationship('Rank', foreign_keys=[CurrentRankId],
-                                                 back_populates='CurrentRankPlayer')
+                                               back_populates='CurrentRankPlayer')
     HighestRank: Mapped['Rank'] = relationship('Rank', foreign_keys=[HighestRankId],
-                                                 back_populates='HighestRankPlayer')
+                                               back_populates='HighestRankPlayer')
 
     PrimaryPosition: Mapped['Position'] = relationship('Position', foreign_keys=[PrimaryPositionId],
                                                        back_populates='PrimaryPositionPlayer')
@@ -61,13 +65,13 @@ class Player(Base):
     CreatedTeams: Mapped[List['Team']] = relationship('Team', back_populates='CreatePlayer')
 
     TeamJoinApplicationFromPlayer: Mapped[List['TeamJoinApplication']] = relationship('TeamJoinApplication',
-                                                                            foreign_keys='[TeamJoinApplication.FromPlayerId]',
-                                                                            back_populates='FromPlayer')
+                                                                                      foreign_keys='[TeamJoinApplication.FromPlayerId]',
+                                                                                      back_populates='FromPlayer')
 
     TeamJoinApplicationToPlayer: Mapped[List['TeamJoinApplication']] = relationship('TeamJoinApplication',
-                                                                             foreign_keys='[TeamJoinApplication.ToPlayerId]',
-                                                                             back_populates='ToPlayer')
+                                                                                    foreign_keys='[TeamJoinApplication.ToPlayerId]',
+                                                                                    back_populates='ToPlayer')
 
     TeamJoinApplicationHandlerPlayer: Mapped[List['TeamJoinApplication']] = relationship('TeamJoinApplication',
-                                                                             foreign_keys='[TeamJoinApplication.HandlerPlayerId]',
-                                                                             back_populates='HandlerPlayer')
+                                                                                         foreign_keys='[TeamJoinApplication.HandlerPlayerId]',
+                                                                                         back_populates='HandlerPlayer')

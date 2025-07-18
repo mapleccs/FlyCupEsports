@@ -4,6 +4,10 @@ from backend.models.position import Position
 from backend.schemas.v1.position import PositionInfoResponse
 
 
+def get_position_by_name(db: Session, name: str) -> Position | None:
+    return db.query(Position).filter(Position.Name == name).first()
+
+
 def get_all_position(db: Session) -> list[PositionInfoResponse]:
     positions = db.query(Position).all()
 

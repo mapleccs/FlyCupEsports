@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from backend.routers.v1 import user, role,position
+from backend.routers.v1 import user, role, rank, position, player
 
 # 其他模块你也可以继续加
 
@@ -9,3 +9,5 @@ router = APIRouter(prefix="/v1")
 router.include_router(user.router)
 router.include_router(role.router)
 router.include_router(position.router)
+router.include_router(player.router)
+router.include_router(rank.router)
