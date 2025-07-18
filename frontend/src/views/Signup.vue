@@ -57,12 +57,16 @@
 <script setup>
 import { ref, reactive } from 'vue';
 import { ElMessage } from 'element-plus';
+import {useUserStore} from "@/stores/userStore";
 import RegionSelection from '@/components/signup/RegionSelection.vue';
 import PlayerSignupForm from '@/components/signup/PlayerSignupForm.vue';
 import TeamSignupForm from '@/components/signup/TeamSignupForm.vue';
 import PaymentDialog from '@/components/signup/PaymentDialog.vue';
 import { createPlayerSignup, createTeamSignup, createWechatPayment, checkPaymentStatus } from '@/services/signupService';
 
+
+// 初始化用户
+const userStore = useUserStore()
 // --- 状态管理 ---
 
 const activeTab = ref('player'); // 当前激活的标签页
@@ -126,64 +130,49 @@ const handleLogoUpload = (url) => {
 
 // 触发表单提交，打开支付对话框
 const handleSubmit = async () => {
-  submitting.value = true
-
-  try {
-    const type = activeTab.value
-    const formData = type === 'player' ? playerFormData.value : teamFormData.value
-
-    // 创建报名记录
-    const response = type === 'player'
-    ? await createPlayerSignup({
-          ...formData,
-          regions: selectedRegion.value
-        })
-        : await createTeamSignup({
-          ...formData,
-          regions: selectedRegion.value
-        })
-
-    const signupId = response.data.id
-    currentOrderId.value = signupId
-
-    // 准备支付参数
-    paymentDialog.title = type === 'player' ? '选手报名支付' : '战队创建支付'
-    paymentDialog.item = type === 'player'
-    ? `选手报名 - ${playerFormData.value.personal_name}`
-    : `创建战队 - ${teamFormData.value.name}`
-
-    paymentDialog.amount = fees[type]
-    paymentDialog.visible = true
-  } catch (error) {
-    ElMessage.error (`报名创建失败：${error.response?.data?.message || error.message}`)
-  } finally {
-    submitting.value = false
-  }
-};
-
-// 处理支付确认
-const handlePaymentConfirmed = async (paymentMethod) => {
   submitting.value = true;
-  ElMessage.info(`正在通过 ${paymentMethod === 'alipay' ? '支付宝' : '微信'} 处理支付...`);
+  try {
+    const type = activeTab.value;
+    const formData = type === 'player' ? playerFormData.value : teamFormData.value;
+    const dataToSend = {
+      ...formData,
+      region_id: selectedRegion.value // 假设后端需要 'region_id'
+    };
 
-  // 模拟API调用
-  await new Promise(resolve => setTimeout(resolve, 1500));
+    let response;
+    if (type === 'player') {
+      response = await createPlayerSignup(dataToSend);
+      // 注册成功后，更新用户角色为 'player'
+      if (response.data.success) {
+        userStore.upgradeToPlayer(); //
+        // 重置表单
+        Object.keys(playerFormData.value).forEach(key => { playerFormData.value[key] = ''; });
+        playerFormData.value.agreement = false;
+      }
+    } else { // 'team'
+      response = await createTeamSignup(dataToSend);
+      // 创建战队成功后，更新用户角色为 'captain'
+      if (response.data.success) { // 假设创建战队有相似的响应
+        userStore.upgradeToCaptain(); //
+        // 重置表单
+        Object.keys(teamFormData.value).forEach(key => { teamFormData.value[key] = ''; });
+        teamFormData.value.agreement = false;
+      }
+    }
 
-  // 实际开发中，这里会是提交数据到后端的逻辑
-  // const formData = activeTab.value === 'Player' ? playerFormData.value : teamFormData.value;
-  // await signupService.submit(formData);
+    // 处理后端返回的响应
+    if (response.data.success) {
+      ElMessage.success('报名成功！您的角色已更新。');
+    } else {
+      // 如果可用，显示后端的错误信息
+      ElMessage.error(`报名失败: ${response.data.message || '未知错误'}`);
+    }
 
-  submitting.value = false;
-  paymentDialog.visible = false;
-  ElMessage.success('报名成功！');
-
-  // 重置表单
-  if (activeTab.value === 'player') {
-    Object.keys(playerFormData.value).forEach(key => playerFormData.value[key] = '');
-    playerFormData.value.agreement = false;
-  } else {
-    Object.keys(teamFormData.value).forEach(key => teamFormData.value[key] = '');
-    teamFormData.value.agreement = false;
+  } catch (error) {
+    // 处理网络或其他意外错误
+    ElMessage.error(`报名请求失败: ${error.response?.data?.message || error.message}`);
+  } finally {
+    submitting.value = false;
   }
 };
 </script>

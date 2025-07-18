@@ -3,10 +3,10 @@ import axios from "axios";
 
 
 
-const API_URL = "/api/v1/signup"
+const API_URL = "/api/v1/player/register"
 // 选手报名
 export function createPlayerSignup(playerData) {
-  return axios.post(`${API_URL}/player`, playerData)
+  return axios.post(`/api/v1/player/register`, playerData)
 }
 
 // 创建战队
