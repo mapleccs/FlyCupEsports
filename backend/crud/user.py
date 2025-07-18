@@ -39,6 +39,4 @@ def create_user(db: Session, user: UserCreateRequest, role_id: int) -> User | No
         RoleId=role_id,
     )
     db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
     return db_user

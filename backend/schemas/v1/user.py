@@ -10,7 +10,7 @@ class UserLoginRequest(BaseModel):
 
 class UserLoginResponse(BaseModel):
     success: bool = Field(..., description="是否成功")
-    user_id: Optional[int] = Field(None, description="用户ID")
+    user_token: Optional[str] = Field(None, description="用户ID")
     user_role_id: Optional[int] = Field(None, description="用户角色编号")
     user_role_name: Optional[str] = Field(None, description="用户角色")
     message: str = Field(..., description="提示信息")
@@ -33,5 +33,5 @@ class UserCreateRequest(BaseModel):
 
 class UserCreateResponse(BaseModel):
     success: bool = Field(..., description="是否成功")
-    user_id: Optional[int] = Field(None, description="用户ID")
+    user_token: Optional[str] = Field(None, description="用户ID token")
     message: str = Field(..., description="提示信息")

@@ -24,7 +24,9 @@ async def get_users(
     except HTTPException as e:
         return UserLoginResponse(
             success=False,
-            user_id=None,
+            user_token=None,
+            user_role_id=None,
+            user_role_name=None,
             message=e.detail,
         )
 
@@ -35,10 +37,11 @@ async def register_user_endpoint(
         db: Session = Depends(get_db),
 ):
     try:
-        return register_user_services(db, user_data)
+        user = register_user_services(db, user_data)
+        return user
     except HTTPException as e:
         return UserCreateResponse(
             success=False,
-            user_id=None,
+            user_token=None,
             message=e.detail
         )
