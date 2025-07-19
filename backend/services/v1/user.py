@@ -7,9 +7,10 @@ from backend.schemas.v1.user import UserCreateRequest, UserCreateResponse, UserI
     UserLoginResponse, UserUpdateRoleResponse
 from backend.crud.user import get_user_by_username, create_user, get_all_user, user_login, change_user_type
 from backend.crud.role import get_role_by_name
-from backend.core.auth import create_access_token
+from backend.core.auth import create_access_token, create_refresh_token
 
-def user_login_service(db: Session, login_info: UserLoginRequest) -> UserLoginResponse | None:
+
+def user_login_service(db: Session, login_info: UserLoginRequest) -> UserLoginResponse:
     user = user_login(db, login_info)
     if not user:
         raise HTTPException(
@@ -17,13 +18,13 @@ def user_login_service(db: Session, login_info: UserLoginRequest) -> UserLoginRe
             detail="用户名或密码错误.",
         )
 
-    token = create_access_token({
-        "user_id": user.Id,
-    })
+    access_token = create_access_token({"user_id": user.Id})
+    refresh_token = create_refresh_token({"user_id": user.Id})
 
     return UserLoginResponse(
         success=True,
-        user_token=token,
+        user_token=access_token,
+        refresh_token=refresh_token,
         user_role_id=user.RoleId,
         user_role_name=user.Role.Name if user.Role else None,
         message="登录成功.",

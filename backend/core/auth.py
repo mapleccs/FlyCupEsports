@@ -9,12 +9,17 @@ from backend.core.config import settings
 
 security = HTTPBearer()
 
+def create_refresh_token(data: dict) -> str:
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
+    to_encode.update({"exp": expire, "type": "refresh"})
+    return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+
 def create_access_token(data: dict) -> str:
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
-    return encoded_jwt
+    to_encode.update({"exp": expire, "type": "access"})
+    return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
 def decode_token(token: str) -> dict:
     try:
@@ -24,6 +29,12 @@ def decode_token(token: str) -> dict:
         raise HTTPException(status_code=401, detail="Token 已过期")
     except JWTError:
         raise HTTPException(status_code=401, detail="无效的 Token")
+    
+def verify_refresh_token(token: str) -> dict:
+    payload = decode_token(token)
+    if payload.get("type") != "refresh":
+        raise HTTPException(status_code=401, detail="不是 refresh token")
+    return payload
 
 def get_token_field(field_name: str):
     def dependency(credentials: HTTPAuthorizationCredentials = Security(security)):

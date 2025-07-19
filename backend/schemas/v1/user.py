@@ -10,10 +10,11 @@ class UserLoginRequest(BaseModel):
 
 class UserLoginResponse(BaseModel):
     success: bool = Field(..., description="是否成功")
-    user_token: Optional[str] = Field(None, description="用户ID")
-    user_role_id: Optional[int] = Field(None, description="用户角色编号")
-    user_role_name: Optional[str] = Field(None, description="用户角色")
-    message: str = Field(..., description="提示信息")
+    user_token: Optional[str] = Field(None, description="用户token")
+    refresh_token: Optional[str] = Field(None, description="刷新token")
+    user_role_id: Optional[int] = Field(None, description="角色编号")
+    user_role_name: Optional[str] = Field(None, description="角色名")
+    message: Optional[str] = Field(None, description="信息")
 
 
 class UserInfoResponse(BaseModel):

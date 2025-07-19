@@ -25,6 +25,7 @@ async def get_users(
         return UserLoginResponse(
             success=False,
             user_token=None,
+            refresh_token=None,
             user_role_id=None,
             user_role_name=None,
             message=e.detail,

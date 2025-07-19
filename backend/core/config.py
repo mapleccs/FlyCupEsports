@@ -11,7 +11,8 @@ class Settings(BaseSettings):
 
     SECRET_KEY: str = "+gkDMNVoMr1/BuHN8FBmOMF380frQwM76ngkM8ruZs0="
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 90
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
     @property
     def database_url(self) -> str:
