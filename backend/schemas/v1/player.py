@@ -19,4 +19,5 @@ class PlayerRegisterRequest(BaseModel):
 class PlayerRegisterResponse(BaseModel):
     success: bool = Field(..., description="是否成功")
     player_token: Optional[str] = Field(None, description="玩家编号token")
+    player_id: Optional[int] = Field(None, description="玩家编号")
     message: str = Field(..., description="提示信息")

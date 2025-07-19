@@ -7,7 +7,7 @@
         :key="region.id"
         class="region-card"
         :class="{ active: selectedRegion === region.id }"
-        @click="$emit('region-selected', region.id)"
+        @click="$emit('region_id-selected', region.id)"
       >
         <div class="region-icon">
           <i :class="region.icon"></i>
@@ -31,7 +31,7 @@ defineProps({
   selectedRegion: String
 })
 
-defineEmits(['region-selected'])
+defineEmits(['region_id-selected'])
 </script>
 
 <style scoped>

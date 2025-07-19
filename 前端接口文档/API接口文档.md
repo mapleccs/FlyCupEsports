@@ -12,7 +12,7 @@ Request Body:
   "current_rank": "当前段位",
   "QQ": "QQ号",
   "contact": "联系方式",
-  "region": "赛区ID",
+  "region_id": "赛区ID",
   "payment_method": "支付方式"
 }
 
@@ -36,7 +36,7 @@ Request Body:
   "shortName": "战队简称",
   "logo": "logo URL",
   "slogan": "战队口号",
-  "region": "赛区ID",
+  "region_id": "赛区ID",
   "payment_method": "支付方式"
 }
 

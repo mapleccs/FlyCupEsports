@@ -19,33 +19,35 @@
 
 ```json
 {
-    "personal_name": "影流之主",
-    "gameId": "ShadowBlade#1234",
-    "main_position": "mid",
-    "secondary_position": "jungle",
-    "highest_rank": "王者",
-    "current_rank": "大师",
-    "QQ": "123456789",
-    "contact": "13800138000",
-    "region": 1,
-    "payment_method": "微信支付"
+  "personal_name": "影流之主",
+  "gameId": "ShadowBlade#1234",
+  "main_position": "mid",
+  "secondary_position": "jungle",
+  "highest_rank": "王者",
+  "current_rank": "大师",
+  "QQ": "123456789",
+  "contact": "13800138000",
+  "region": 1,
+  "payment_method": "微信支付"
 }
 ```
 
 ### 响应参数
 
-| 字段名          | 类型             | 描述                 |
-|--------------|----------------|--------------------|
-| success      | boolean        | 操作是否成功             |
-| player_token | string \| null | 创建的选手ID，失败时可能为null |
-| message      | string         | 提示信息               |
+| 字段名          | 类型              | 描述                 |
+|--------------|-----------------|--------------------|
+| success      | boolean         | 操作是否成功             |
+| player_token | string \| null  | 创建的选手ID，失败时可能为null |
+| player_id    | integer \| null | 创建的选手ID，失败时可能为null |
+| message      | string          | 提示信息               |
 
 **示例**
 
 ```json
 {
     "success": true,
-    "player_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF5ZXJfaWQiOjcsImV4cCI6MTc1MjgxNDgwMX0.ym-00emd1IjM-jOqZQAA3A5-6yfH6u8wXBv99vFIfZ8",
-    "message": "User created successfully."
+    "player_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF5ZXJfaWQiOm51bGwsImV4cCI6MTc1Mjg5NTQ3N30.hxHF9wsXktmBarEDN_8NDBvpOa_ehFgIikA4zFrrWEs",
+    "player_id": 23,
+    "message": "选手注册成功."
 }
 ```

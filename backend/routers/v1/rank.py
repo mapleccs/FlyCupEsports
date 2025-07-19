@@ -7,5 +7,5 @@ router = APIRouter(prefix="/rank", tags=["rank"])
 
 
 @router.get("/")
-async def get_rank(db: Session = Depends(get_db)):
+async def get_ranks(db: Session = Depends(get_db)):
     return get_all_rank_service(db)

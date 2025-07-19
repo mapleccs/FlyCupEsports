@@ -1,8 +1,14 @@
+from typing import Optional
+
 from sqlalchemy import Row
 from sqlalchemy.orm import Session
 from backend.models.player import Player
 from backend.schemas.v1.player import PlayerRegisterRequest, PlayerRegisterResponse
 from datetime import datetime
+
+
+def get_player_by_user_id_region_id(db: Session, user_id: int, region_id: int) -> Optional[Player]:
+    return db.query(Player).filter(Player.UserId == user_id, Player.RegionId == region_id).first()
 
 
 def create_player(db: Session, user_id: int, primary_position_id: int, secondary_position_id: int, highest_rank_id: int,
