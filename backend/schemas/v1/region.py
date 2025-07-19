@@ -13,3 +13,8 @@ class RegionInfoResponse(BaseModel):
     start_competition_date: str = Field(..., description="比赛开始时间")
     end_competition_date: str = Field(..., description="比赛结束时间")
 
+class RegionStatisticsResponse(BaseModel):
+    region_id:int=Field(...,description="赛区编号")
+    region_name:str=Field(...,description="赛区名")
+    team_count:int=Field(...,description="队伍数量")
+    player_count:int=Field(...,description="选手数量")

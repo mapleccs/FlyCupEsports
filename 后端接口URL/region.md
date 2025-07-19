@@ -30,6 +30,33 @@
 ]
 ```
 
-### 说明：
+## GET /api/v1/region/statistics
 
-photo_path 如果没有，结果为null。
+### 响应参数
+
+| 字段名          | 类型      | 描述   |
+|--------------|---------|------|
+| region_id    | integer | 赛区id |
+| region_name  | string  | 赛区名  |
+| team_count   | integer | 队伍数量 |
+| player_count | integer | 玩家数量 |
+
+**示例**
+
+```json
+[
+    {
+        "region_id": 1,
+        "region_name": "FLY",
+        "team_count": 2,
+        "player_count": 3
+    },
+    {
+        "region_id": 2,
+        "region_name": "PFP",
+        "team_count": 0,
+        "player_count": 0
+    }
+]
+```
+
