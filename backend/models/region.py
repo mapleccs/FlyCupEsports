@@ -18,12 +18,13 @@ class Region(Base):
 
     Id: Mapped[int] = mapped_column(Integer, primary_key=True)
     SeasonId: Mapped[int] = mapped_column(Integer, comment='所属赛季')
-    Name: Mapped[str] = mapped_column(String(255))
+    Name: Mapped[str] = mapped_column(String(255),comment="赛区名")
+    RegionLogo: Mapped[str] = mapped_column(String(255),comment="LOGO路径")
     UserId: Mapped[int] = mapped_column(Integer, comment='赛区负责人')
     MaxTeamLimit: Mapped[int] = mapped_column(Integer, comment='最大战队上限')
-    EndRegisterDate: Mapped[datetime.datetime] = mapped_column(DateTime, comment='报名截止日期')
-    StartCompetitionDate: Mapped[datetime.datetime] = mapped_column(DateTime, comment='比赛开始日期')
-    EndCompetitionDate: Mapped[datetime.datetime] = mapped_column(DateTime, comment='比赛结束日期')
+    EndRegisterDate: Mapped[Optional[datetime.datetime]] = mapped_column(DateTime, comment='报名截止日期')
+    StartCompetitionDate: Mapped[Optional[datetime.datetime]] = mapped_column(DateTime, comment='比赛开始日期')
+    EndCompetitionDate: Mapped[Optional[datetime.datetime]] = mapped_column(DateTime, comment='比赛结束日期')
 
     Season: Mapped['Season'] = relationship('Season', back_populates='Regions')
     User: Mapped['User'] = relationship('User', back_populates='Regions')

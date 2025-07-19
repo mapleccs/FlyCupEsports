@@ -35,3 +35,8 @@ class UserCreateResponse(BaseModel):
     success: bool = Field(..., description="是否成功")
     user_token: Optional[str] = Field(None, description="用户ID token")
     message: str = Field(..., description="提示信息")
+
+
+class UserUpdateRoleResponse(BaseModel):
+    success: bool = Field(..., description="是否成功")
+    message: str = Field(..., description="提示信息")

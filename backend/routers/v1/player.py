@@ -24,5 +24,6 @@ async def register_user_endpoint(
         return PlayerRegisterResponse(
             success=False,
             player_token=None,
+            player_id=None,
             message=e.detail
         )

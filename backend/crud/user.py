@@ -3,6 +3,16 @@ from backend.models.user import User
 from backend.schemas.v1.user import UserCreateRequest, UserInfoResponse, UserLoginRequest
 
 
+def change_user_type(db: Session, user_id: int, user_role_id: int) -> bool:
+    user = db.query(User).filter(User.Id == user_id).first()
+
+    if not user:
+        return False
+
+    user.RoleId = user_role_id
+    return True
+
+
 def user_login(db: Session, login_info: UserLoginRequest) -> User | None:
     user = db.query(User).options(joinedload(User.Role)).filter(
         User.Username == login_info.username,
