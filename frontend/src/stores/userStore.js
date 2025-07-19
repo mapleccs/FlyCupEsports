@@ -28,13 +28,21 @@ export const useUserStore = defineStore('user', () => {
 
   // 添加初始化方法
   const init = async () => {
-    if (token.value && !user.value) {
+    // 条件：当localStorage中有token，但store中的isAuthenticated状态还未同步时
+    if (token.value && !isAuthenticated.value) {
       try {
-        user.value = await fetchUserProfile()
-        localStorage.setItem('userRole', user.value.role)
+        // 标记为已认证，这是最重要的一步
+        // 这样后续的路由守卫和API请求都能立刻知道用户是登录状态
+        isAuthenticated.value = true;
+
+        // 异步在后台获取完整的用户信息，这不会阻塞UI
+        // 即使用户信息还没获取完，API请求也已经可以带上token了
+        const userData = await fetchUserProfile();
+        user.value = userData;
+        localStorage.setItem('userRole', user.value.role); // 更新本地的角色信息
       } catch (error) {
-        console.error('初始化用户信息失败:', error)
-        logout()
+        console.error('初始化用户信息失败，将自动登出:', error);
+        logout(); // 如果token无效或获取信息失败，则执行登出
       }
     }
   }

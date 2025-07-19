@@ -4,6 +4,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.models.base import Base
 
+
 class Rank(Base):
     __tablename__ = 'Rank'
 

@@ -122,13 +122,13 @@ async function handleRegister() {
     if (success) {
       // 注册成功，显示消息并跳转到登录页面
       ElMessage.success({
-        message: message || '注册成功，请登录',
+        message: message || '注册成功，已登录',
         duration: 2000
       })
 
       // 延迟跳转让用户看到成功消息
       setTimeout(() => {
-        router.push('/login')
+        router.push('/')
       }, 1500)
     } else {
       // 注册失败，显示错误信息

@@ -1,11 +1,20 @@
 
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from backend.core.database import init_db
 from backend.routers import v1_router
 
 app = FastAPI(title="FlyCup")
+
+
+# --- 添加这个调试中间件 ---
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    print(f"收到请求: {request.method} {request.url}")
+    print(f"请求头: {request.headers}")
+    response = await call_next(request)
+    return response
 
 init_db()
 

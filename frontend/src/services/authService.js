@@ -11,27 +11,37 @@ export const loginUser = async (credentials) => {
     const res = await axios.post(`${API_URL}/login`, {
       username: credentials.username,
       password: credentials.password
-    })
+    });
 
-    const data = res.data
-    const { user_id, user_role_name, token } = data
+    const data = res.data;
+
+    // --- 已修正 ---
+    // 使用对象解构别名，将后端的 user_token 赋值给前端的 token 变量
+    const { user_token: token, user_role_name } = data;
+
+    // 检查获取到的 token 是否有效
+    if (!token) {
+      throw new Error('登录失败，未能从服务器获取Token');
+    }
 
     // 保本地一份，刷新页面还能拿到
-    localStorage.setItem('authToken', token)
-    localStorage.setItem('userRole', user_role_name)
+    localStorage.setItem('authToken', token);
+    localStorage.setItem('userRole', user_role_name);
 
+    // 请注意：后端响应中没有 user_id，所以这里的 user 对象暂时不包含 id
+    // 完整的用户信息应该在之后通过 fetchUserProfile() 获取
     return {
       user: {
-        id: user_id,
         // 把 "Admin"/"User"/"Player"/"Captain" 转成小写，跟 Store 里 ROLES 对齐
         role: user_role_name.toLowerCase()
       },
       token
-    }
+    };
   } catch (error) {
-    throw new Error(error.response?.data?.detail || '登录失败，请稍后再试')
+    // 保持详细的错误抛出
+    throw new Error(error.response?.data?.detail || error.message || '登录失败，请稍后再试');
   }
-}
+};
 
 // 注册方法
 export const registerUser = async (userData) => {

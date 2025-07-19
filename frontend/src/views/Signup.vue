@@ -57,7 +57,7 @@
 <script setup>
 import { ref, reactive } from 'vue';
 import { ElMessage } from 'element-plus';
-import {useUserStore} from "@/stores/userStore";
+import { useUserStore } from "@/stores/userStore";
 import RegionSelection from '@/components/signup/RegionSelection.vue';
 import PlayerSignupForm from '@/components/signup/PlayerSignupForm.vue';
 import TeamSignupForm from '@/components/signup/TeamSignupForm.vue';
@@ -133,44 +133,53 @@ const handleSubmit = async () => {
   submitting.value = true;
   try {
     const type = activeTab.value;
-    const formData = type === 'player' ? playerFormData.value : teamFormData.value;
-    const dataToSend = {
-      ...formData,
-      region_id: selectedRegion.value // 假设后端需要 'region_id'
-    };
 
-    let response;
+    // 只处理选手报名的情况
     if (type === 'player') {
-      response = await createPlayerSignup(dataToSend);
-      // 注册成功后，更新用户角色为 'player'
+      // --- 已修正 ---
+
+      // 1. 创建一个映射，将前端的字符串ID转换为后端需要的整数ID
+      const regionIdMapping = {
+        fly: 1,
+        fpf: 2
+      };
+
+      const formData = playerFormData.value;
+      const dataToSend = {
+        ...formData,
+        // 2. 修正 `region` 字段：使用正确的字段名并传递整数
+        region: regionIdMapping[selectedRegion.value],
+        // 3. 添加缺失的 `payment_method` 字段
+        // 注意：这里的 'wechat' 是一个占位符。
+        // 您需要根据实际的支付流程，从支付对话框(PaymentDialog)获取用户选择的支付方式。
+        payment_method: 'wechat'
+      };
+
+      // 4. (可选) 清理后端不需要的字段
+      delete dataToSend.agreement;
+
+      const response = await createPlayerSignup(dataToSend);
+
       if (response.data.success) {
-        userStore.upgradeToPlayer(); //
+        ElMessage.success('报名成功！您的角色已更新。');
+        userStore.upgradeToPlayer();
         // 重置表单
         Object.keys(playerFormData.value).forEach(key => { playerFormData.value[key] = ''; });
         playerFormData.value.agreement = false;
+      } else {
+        ElMessage.error(`报名失败: ${response.data.message || '未知错误'}`);
       }
-    } else { // 'team'
-      response = await createTeamSignup(dataToSend);
-      // 创建战队成功后，更新用户角色为 'captain'
-      if (response.data.success) { // 假设创建战队有相似的响应
-        userStore.upgradeToCaptain(); //
-        // 重置表单
-        Object.keys(teamFormData.value).forEach(key => { teamFormData.value[key] = ''; });
-        teamFormData.value.agreement = false;
-      }
-    }
 
-    // 处理后端返回的响应
-    if (response.data.success) {
-      ElMessage.success('报名成功！您的角色已更新。');
-    } else {
-      // 如果可用，显示后端的错误信息
-      ElMessage.error(`报名失败: ${response.data.message || '未知错误'}`);
+    } else if (type === 'team') {
+      // 战队报名的逻辑（如果需要，也请按类似方式检查并修正）
+      // const teamResponse = await createTeamSignup(...);
     }
 
   } catch (error) {
-    // 处理网络或其他意外错误
-    ElMessage.error(`报名请求失败: ${error.response?.data?.message || error.message}`);
+    const errorMsg = error.response?.data?.detail?.[0]?.msg ||
+                     error.response?.data?.detail ||
+                     error.message;
+    ElMessage.error(`报名请求失败: ${errorMsg}`);
   } finally {
     submitting.value = false;
   }

@@ -21,27 +21,28 @@ const routes = [
         { path: '/login', name: 'Login', component: Login },
         { path: '/register', name: 'Register', component: Register },
         { path: '/teams', name: 'Teams', component: Teams },
-        { path: '/signup', name: 'Signup', component: Signup },
+        // 您已经正确地添加了 meta 标记
+        { path: '/signup', name: 'Signup', component: Signup, meta: {requiresAuth: true} },
         { path: '/recruitment', name: 'Recruitment', component: Recruitment },
-        { path: '/profile', name: 'Profile', component: Profile },
+        // 假设个人资料页也需要登录
+        { path: '/profile', name: 'Profile', component: Profile, meta: {requiresAuth: true} },
         { path: '/live', name: 'Live', component: Live },
         { path: '/schedule', name: 'Schedule', component: Schedule },
-        { path: '/match', name: 'MatchControl', component: MatchControl }
-        // 其他页面路由
+        // 假设比赛控制页也需要登录
+        { path: '/match', name: 'MatchControl', component: MatchControl, meta: {requiresAuth: true} }
     ]
   },
 ]
 
+// 创建路由实例，并将其赋值给 router 常量
 const router = createRouter({
   history: createWebHistory(),
   routes,
   scrollBehavior(to, from, savedPosition) {
     if (to.hash) {
-      // 处理带 hash 的导航
       return {
         el: to.hash,
         behavior: 'smooth',
-        // 偏移量（导航栏高度）
         top: 70
       }
     } else if (savedPosition) {
@@ -52,11 +53,12 @@ const router = createRouter({
   }
 })
 
-// 路由守卫
+// 路由守卫 (已优化)
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
 
-    // 如果用户未初始化但存在token，先初始化
+  // 尝试在每次路由切换时初始化用户信息（如果需要）
+  // 这确保了用户刷新页面后，登录状态能被恢复
   if (localStorage.getItem('authToken') && !userStore.isAuthenticated) {
     try {
       await userStore.init()
@@ -65,38 +67,38 @@ router.beforeEach(async (to, from, next) => {
     }
   }
 
-  // 根据角色设置页面访问权限
-  const rolePermissions = {
-    user: ['/', '/home', '/events', '/teams', '/recruitment', '/login', '/register'],
-    player: ['/', '/home', '/events', '/teams', '/recruitment', '/profile', '/signup'],
-    captain: ['/', '/home', '/events', '/teams', '/recruitment', '/profile', '/signup', '/team-manage'],
-    admin: ['*'] // 管理员可以访问所有页面
-  }
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
-  // 检查是否需要认证
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (!userStore.isAuthenticated) {
-      next({ name: 'Login', query: { redirect: to.fullPath } })
+  if (requiresAuth && !userStore.isAuthenticated) {
+    // 情况1：页面需要认证，但用户未登录 -> 重定向到登录页
+    next({ name: 'Login', query: { redirect: to.fullPath } });
+  } else if (requiresAuth && userStore.isAuthenticated) {
+    // 情况2：页面需要认证，且用户已登录 -> 检查角色权限
+    const userRole = userStore.user?.role || 'user';
+    const rolePermissions = {
+      user: ['/', '/home', '/events', '/teams', '/recruitment', '/login', '/register'],
+      player: ['/', '/home', '/events', '/teams', '/recruitment', '/profile', '/signup'],
+      captain: ['/', '/home', '/events', '/teams', '/recruitment', '/profile', '/signup', '/team-manage'],
+      admin: ['*']
+    };
+
+    const allowedRoutes = rolePermissions[userRole] || [];
+    const canAccess = allowedRoutes.includes('*') || allowedRoutes.some(route => to.path.startsWith(route));
+
+    if (userStore.isAdmin || canAccess) {
+      next(); // 有权限，放行
     } else {
-      // 检查用户角色是否有权限访问
-      const allowedRoutes = rolePermissions[userStore.user?.role] || []
-      if (
-        userStore.isAdmin() ||
-        allowedRoutes.includes('*') ||
-        allowedRoutes.includes(to.path) ||
-        allowedRoutes.some(route => to.path.startsWith(route))
-      ) {
-        next()
-      } else {
-        next({ name: 'NotAuthorized' }) // 创建无权限页面
-      }
+      // 角色无权限，可以跳转到无权限页面（如果创建了的话）
+      // next({ name: 'NotAuthorized' });
+      // 或者暂时先跳回首页
+      next({ name: 'Home' });
     }
+  } else {
+    // 情况3：页面不需要认证 -> 直接放行
+    next();
   }
-  // ...其他验证逻辑...
 })
 
-export default createRouter({
-  history: createWebHistory(),
-  routes,
-  router
-})
+// --- 已修正 ---
+// 正确导出您配置好的 router 实例
+export default router;
