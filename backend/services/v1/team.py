@@ -12,6 +12,8 @@ from backend.crud.position import get_position_by_name
 from backend.crud.rank import get_rank_by_name
 from backend.core.auth import create_access_token
 from backend.services.v1.player import get_player_by_user_id_region_id_service
+from backend.crud.user import change_user_type
+from backend.crud.role import get_role_by_name
 
 
 def register_team_services(db: Session, user_id: int,
@@ -25,6 +27,13 @@ def register_team_services(db: Session, user_id: int,
             )
 
         team = create_team(db, player.Id, team_data)
+
+        role = get_role_by_name(db, "captain")
+        if role is None:
+            raise HTTPException(status_code=404, detail="'队长'角色未找到")
+        change_success = change_user_type(db, user_id, role.Id)
+        if not change_success:
+            raise HTTPException(status_code=400, detail="玩家状态修改失败")
 
         db.commit()
         db.refresh(team)
